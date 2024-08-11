@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "357733121575",
+    "project_id": "ddu-e-connect",
+    "storage_bucket": "ddu-e-connect.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357733121575:android:9e6e29f5131a4debb35802",
+        "android_client_info": {
+          "package_name": "com.example.ddu_e_connect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzaCx43e2EEfNdMC_wxI3lFUbIYWbBPjI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

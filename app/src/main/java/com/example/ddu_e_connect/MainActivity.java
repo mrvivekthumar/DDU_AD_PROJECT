@@ -8,7 +8,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity {
+
+    FirebaseAuth auth;
+
+    GoogleSignInAccount googleSignInAccount;
+
+    ShapeableImageView shapeableImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
