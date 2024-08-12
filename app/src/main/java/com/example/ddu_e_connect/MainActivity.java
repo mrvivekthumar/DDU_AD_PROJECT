@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
         if(auth.getCurrentUser() != null){
             Glide.with(MainActivity.this)
                     .load(Objects.requireNonNull(auth.getCurrentUser()))
