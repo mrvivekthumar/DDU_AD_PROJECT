@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 activityResultLauncher.launch(intent);
             }
         });
-//        remove this functionality
+//        remove this functionality and shift to another
         MaterialButton signOut = findViewById(R.id.signout);
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
