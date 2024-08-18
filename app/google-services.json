@@ -12,7 +12,20 @@
           "package_name": "com.example.ddu_e_connect"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "357733121575-8tpov4e0csajvb12qgpkjt5rh14bdm52.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ddu_e_connect",
+            "certificate_hash": "a925ee6d8599c250cc1ff6aa6833d8259a668ee4"
+          }
+        },
+        {
+          "client_id": "357733121575-2ckrrnvd94vd6er1qc2mgrtavglb8kkf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCzaCx43e2EEfNdMC_wxI3lFUbIYWbBPjI"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "357733121575-2ckrrnvd94vd6er1qc2mgrtavglb8kkf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
