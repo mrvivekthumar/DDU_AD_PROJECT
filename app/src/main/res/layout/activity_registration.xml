@@ -1,16 +1,18 @@
-<!-- res/layout/activity_sign_in.xml -->
+<!-- res/layout/activity_registration.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:minHeight="48dp" />
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="16dp"/>
 
     <EditText
         android:id="@+id/passwordEditText"
@@ -18,11 +20,11 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
-        android:minHeight="48dp" />
+        android:layout_marginBottom="16dp"/>
 
     <Button
-        android:id="@+id/signInButton"
+        android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign In" />
+        android:text="Register" />
 </LinearLayout>

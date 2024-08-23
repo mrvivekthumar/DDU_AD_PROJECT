@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "357733121575",
+    "firebase_url": "https://ddu-e-connect-default-rtdb.firebaseio.com",
     "project_id": "ddu-e-connect",
     "storage_bucket": "ddu-e-connect.appspot.com"
   },

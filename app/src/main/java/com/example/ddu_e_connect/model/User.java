@@ -1,22 +1,41 @@
 package com.example.ddu_e_connect.model;
 
 public class User {
-    private String userId;
+    private String id;
+    private String name;
     private String email;
+    private String password; // Note: Storing passwords directly is not recommended
 
-    // Constructor
-    public User(String userId, String email) {
-        this.userId = userId;
+    // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    public User() {
+    }
+
+    public User(String name, String email) {
+        this.name = name;
         this.email = email;
     }
 
-    // Getters and Setters
-    public String getUserId() {
-        return userId;
+    public User(String id, String name, String email, String password) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -25,5 +44,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

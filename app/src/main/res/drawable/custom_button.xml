@@ -3,10 +3,10 @@
     <!-- Button when pressed -->
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/button_background" />
+            <solid android:color="@color/button_background1" />
             <stroke
                 android:width="2dp"
-                android:color="@color/button_clicked_border" />
+                android:color="@color/button_border" />
             <corners android:radius="8dp" />
             <padding
                 android:left="16dp"
@@ -19,10 +19,10 @@
     <!-- Default button state -->
     <item>
         <shape>
-            <solid android:color="@color/button_background" />
+            <solid android:color="@color/button_background2" />
             <stroke
                 android:width="2dp"
-                android:color="@color/button_border_left" />
+                android:color="@color/button_border" />
             <corners android:radius="8dp" />
             <padding
                 android:left="16dp"
