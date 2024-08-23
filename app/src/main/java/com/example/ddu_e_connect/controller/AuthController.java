@@ -1,8 +1,5 @@
 package com.example.ddu_e_connect.controller;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,7 +9,8 @@ public class AuthController {
     private FirebaseAuth firebaseAuth;
 
     public AuthController() {
-        firebaseAuth = FirebaseAuth.getInstance();
+
+        this.firebaseAuth = FirebaseAuth.getInstance();
     }
 
     public FirebaseUser getCurrentUser() {
@@ -20,28 +18,23 @@ public class AuthController {
     }
 
     public Task<AuthResult> register(String email, String password, OnAuthCompleteListener onAuthCompleteListener) {
-        return firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Registration successful
-                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                    if (user != null) {
-                        // Optionally send verification email
-                        user.sendEmailVerification().addOnCompleteListener(emailVerificationTask -> {
-                            if (emailVerificationTask.isSuccessful()) {
-                                onAuthCompleteListener.onSuccess(user);
-                            } else {
-                                onAuthCompleteListener.onFailure("Failed to send verification email: " + emailVerificationTask.getException().getMessage());
-                            }
-                        });
-                    } else {
-                        onAuthCompleteListener.onFailure("Failed to get user information.");
-                    }
+        return firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null) {
+                    user.sendEmailVerification().addOnCompleteListener(emailVerificationTask -> {
+                        if (emailVerificationTask.isSuccessful()) {
+                            onAuthCompleteListener.onSuccess(user);
+                        } else {
+                            onAuthCompleteListener.onFailure("Failed to send verification email: " + emailVerificationTask.getException().getMessage());
+                        }
+                    });
                 } else {
-                    // Registration failed
-                    onAuthCompleteListener.onFailure("Registration failed: " + task.getException().getMessage());
+                    onAuthCompleteListener.onFailure("Failed to get user information.");
                 }
+            } else {
+                onAuthCompleteListener.onFailure("Registration failed: " + task.getException().getMessage());
             }
         });
     }
@@ -77,8 +70,13 @@ public class AuthController {
                 });
     }
 
+    public Task<Void> sendPasswordResetEmail(String email) {
+        return firebaseAuth.sendPasswordResetEmail(email);
+    }
+
     public interface OnAuthCompleteListener {
         void onSuccess(FirebaseUser user);
+
         void onFailure(String errorMessage);
     }
 }

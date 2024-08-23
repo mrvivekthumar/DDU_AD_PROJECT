@@ -7,6 +7,10 @@ android {
     namespace 'com.example.ddu_e_connect'
     compileSdk 34
 
+    viewBinding{
+        enable = true
+    }
+
     defaultConfig {
         applicationId "com.example.ddu_e_connect"
         minSdk 24

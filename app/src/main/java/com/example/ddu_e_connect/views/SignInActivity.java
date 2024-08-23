@@ -1,23 +1,28 @@
-package com.example.ddu_e_connect.view;
+package com.example.ddu_e_connect.views;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ddu_e_connect.MainActivity;
 import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.controller.AuthController;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SignInActivity extends AppCompatActivity {
 
-    private EditText emailEditText, passwordEditText;
+    private EditText emailEditText;
+    private EditText passwordEditText;
     private Button signInButton;
+    private TextView registerLink;
     private AuthController authController;
+    private TextView forgotPasswordLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +32,8 @@ public class SignInActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         signInButton = findViewById(R.id.signInButton);
+        registerLink = findViewById(R.id.registerLink);
+        forgotPasswordLink = findViewById(R.id.forgotPasswordLink);
 
         authController = new AuthController();
 
@@ -42,7 +49,7 @@ public class SignInActivity extends AppCompatActivity {
                         public void onSuccess(FirebaseUser user) {
                             if (user != null && user.isEmailVerified()) {
                                 // Sign-in successful and email is verified, navigate to HomePageActivity
-                                startActivity(new Intent(SignInActivity.this, HomePageActivity.class));
+                                startActivity(new Intent(SignInActivity.this,HomeActivity.class));
                                 finish();
                             } else {
                                 Toast.makeText(SignInActivity.this, "Please verify your email first.", Toast.LENGTH_SHORT).show();
@@ -60,6 +67,27 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
+
+        registerLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to RegisterActivity
+                startActivity(new Intent(SignInActivity.this, RegistrationActivity.class));
+                finish();
+            }
+        });
+
+        forgotPasswordLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignInActivity.this, ForgotPasswordActivity.class));
+                finish();
+            }
+        });
+
 
     }
 

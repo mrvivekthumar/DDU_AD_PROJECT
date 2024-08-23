@@ -5,9 +5,14 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="white">#FFFFFF</color>
 
-    <color name="background">#111827</color>
-    <color name="button_background1">#111827</color>
-    <color name="button_background2">#FFD60A</color>
+    <color name="background">#000814</color>
+    <color name="EditText_background">#161D29</color>
+
+    #424854
+    <color name="EditText_text_color">#999DAA</color>
+    <color name="button_background">#FFD60A</color>
+    <color name="button_text_color">#000814</color>
+
     <color name="text_color1">#2CDFF1</color>
     <color name="text_color2">#EAEBF8</color>
     <color name="button_border">#EAEBF8</color>

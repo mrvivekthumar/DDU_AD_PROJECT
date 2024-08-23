@@ -1,28 +1,83 @@
-<!-- res/layout/activity_sign_in.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/background"
+    android:padding="24dp">
 
-    <EditText
-        android:id="@+id/emailEditText"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:minHeight="48dp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
 
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:minHeight="48dp" />
+        <!-- Email EditText -->
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:textColor="@color/EditText_text_color"
+            android:background="@drawable/custom_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="10dp"
+            android:drawableLeft="@drawable/ic_email"/>
 
-    <Button
-        android:id="@+id/signInButton"
-        android:layout_width="match_parent"
+        <!-- Password EditText -->
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:textColor="@color/EditText_text_color"
+            android:background="@drawable/custom_edittext"
+            android:padding="12dp"
+            android:drawablePadding="10dp"
+            android:drawableLeft="@drawable/ic_lock"
+            android:inputType="textPassword"/>
+
+        <!-- "Forgot Password?" Link -->
+        <TextView
+            android:id="@+id/forgotPasswordLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="end"
+            android:minHeight="48dp"
+            android:text="Forgot Password?"
+            android:textColor="@color/text_color1"
+            android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/signInButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign In"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/button_text_color"
+            android:padding="16dp"
+            android:layout_below="@id/forgotPasswordLink"
+            android:layout_marginTop="24dp"/>
+    </LinearLayout>
+
+
+    <!-- "Don't have an account? Register" Link -->
+    <TextView
+        android:id="@+id/registerLink"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign In" />
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="48dp"
+        android:text="Don't have an account? Register"
+        android:textColor="@color/text_color1"
+        android:textSize="16sp" />
+</RelativeLayout>

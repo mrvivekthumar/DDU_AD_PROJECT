@@ -1,30 +1,67 @@
-<!-- res/layout/activity_registration.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    android:background="@color/background"
+    android:padding="24dp">
 
-    <EditText
-        android:id="@+id/emailEditText"
+    <!-- Centered Content -->
+    <LinearLayout
+        android:id="@+id/centeredContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"/>
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center">
 
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:layout_marginBottom="16dp"/>
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:textColor="@color/EditText_text_color"
+            android:background="@drawable/custom_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="10dp"
+            android:drawableLeft="@drawable/ic_email"/>
 
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:textColor="@color/EditText_text_color"
+            android:background="@drawable/custom_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp"
+            android:drawablePadding="10dp"
+            android:drawableLeft="@drawable/ic_lock"
+            android:inputType="textPassword"/>
+
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:background="@color/button_background"
+            android:textColor="@color/button_text_color"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"/>
+    </LinearLayout>
+
+    <!-- Bottom Link -->
+    <TextView
+        android:id="@+id/loginLink"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register" />
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="48dp"
+        android:text="Already have an account? Sign In"
+        android:textColor="@color/text_color1"
+        android:textSize="16sp" />
+
+</RelativeLayout>

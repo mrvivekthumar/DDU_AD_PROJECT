@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DDU_E_CONNECT</string>
-    <string name="sign_in">Sign in with Google</string>
     <string name="client_id">357733121575-2ckrrnvd94vd6er1qc2mgrtavglb8kkf.apps.googleusercontent.com</string>
-    <string name="user_name_label">Name:</string>
-    <string name="user_email_label">Email:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
