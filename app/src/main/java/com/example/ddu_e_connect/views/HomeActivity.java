@@ -1,5 +1,6 @@
 package com.example.ddu_e_connect.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +31,7 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onRoleFetched(String role) {
                     // Show or hide upload PDF button based on user role
-                    if ("helper".equalsIgnoreCase(role) || "admin".equalsIgnoreCase(role)) {
+                    if ("helper".equalsIgnoreCase(role) || "admin".equalsIgnoreCase(role) || "Admin".equalsIgnoreCase(role)) {
                         binding.uploadPdfButton.setVisibility(View.VISIBLE);
                     } else {
                         binding.uploadPdfButton.setVisibility(View.GONE);
@@ -48,12 +49,11 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         // Set click listener for upload PDF button
-        binding.uploadPdfButton.setOnClickListener(v -> uploadPdf());
+        binding.uploadPdfButton.setOnClickListener(v -> navigateToUploadActivity());
     }
 
-    private void uploadPdf() {
-        // Implement PDF upload logic here
-        // For example, show a message indicating that this feature is not yet implemented
-        Log.i("HomeActivity", "Upload PDF functionality not implemented yet.");
+    private void navigateToUploadActivity() {
+        Intent intent = new Intent(HomeActivity.this, UploadActivity.class);
+        startActivity(intent);
     }
 }
