@@ -35,7 +35,7 @@
             android:padding="12dp"
             android:layout_marginBottom="24dp"
             android:drawablePadding="10dp"
-            android:drawableLeft="@drawable/ic_lock"
+            android:drawableStart="@drawable/ic_lock"
             android:inputType="textPassword"/>
 
         <Button

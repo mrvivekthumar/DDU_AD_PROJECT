@@ -3,6 +3,8 @@
 buildscript {
     dependencies {
         classpath libs.google.services.v4315
+        classpath libs.gradle
+        classpath libs.google.services
     }
 }
 

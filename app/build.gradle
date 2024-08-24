@@ -45,8 +45,17 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation libs.glide
 
+//    Firebase authentication dependency
     implementation libs.google.firebase.auth
     implementation platform(libs.firebase.bom.v3320)
     implementation libs.play.services.auth
 
+
+//    Firebase Storage dependency
+    implementation libs.firebase.firestore
+    implementation libs.firebase.storage.v2021
+    implementation libs.firebase.auth.v2211
+
 }
+
+apply plugin: 'com.google.gms.google-services'
