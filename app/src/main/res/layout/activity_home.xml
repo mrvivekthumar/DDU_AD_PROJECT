@@ -2,24 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/background"
+    android:padding="24dp">
 
-    <!-- Center the TextView both horizontally and vertically -->
+    <!-- Centered TextView -->
     <TextView
         android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome to Home Activity!"
-        android:layout_centerInParent="true" />
+        android:textColor="@color/text_color1"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="16dp" /> <!-- Added margin for spacing from the button -->
 
-    <!-- Center the Button horizontally and place it at the bottom with a margin -->
+    <!-- Button at the Bottom -->
     <Button
         android:id="@+id/uploadPdfButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Upload PDF"
+        android:background="@color/button_background"
+        android:textColor="@color/button_text_color"
+        android:padding="16dp"
+        android:textSize="18sp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp" /> <!-- Added margin for spacing from the bottom -->
 
 </RelativeLayout>
