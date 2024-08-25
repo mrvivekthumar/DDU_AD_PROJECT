@@ -53,6 +53,10 @@ public class UploadActivity extends AppCompatActivity {
         binding.uploadPdfButton.setOnClickListener(v -> {
             String pdfName = binding.pdfNameEditText.getText().toString().trim();
             String folderName = binding.folderNameEditText.getText().toString().trim();
+<<<<<<< HEAD
+=======
+            binding.uploadPdfButton.setEnabled(false);
+>>>>>>> new-repo/master
 
             if (pdfUri != null && !pdfName.isEmpty()) {
                 uploadPdf(pdfUri, pdfName, folderName);

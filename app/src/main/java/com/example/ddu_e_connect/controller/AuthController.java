@@ -1,6 +1,10 @@
 package com.example.ddu_e_connect.controller;
 
 import com.google.android.gms.tasks.Task;
+<<<<<<< HEAD
+=======
+import com.google.android.gms.tasks.TaskCompletionSource;
+>>>>>>> new-repo/master
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -97,6 +101,25 @@ public class AuthController {
         return firebaseAuth.sendPasswordResetEmail(email);
     }
 
+<<<<<<< HEAD
+=======
+    public Task<Void> logout() {
+        // Create a TaskCompletionSource to manage the logout process
+        TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
+
+        try {
+            firebaseAuth.signOut();
+            // If signOut is successful, set the result on the TaskCompletionSource
+            taskCompletionSource.setResult(null);
+        } catch (Exception e) {
+            // If an exception occurs, set the exception on the TaskCompletionSource
+            taskCompletionSource.setException(e);
+        }
+
+        return taskCompletionSource.getTask();
+    }
+
+>>>>>>> new-repo/master
     public void fetchUserRole(String userId, RoleCallback callback) {
         db.collection("users").document(userId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -114,6 +137,12 @@ public class AuthController {
                 .addOnFailureListener(e -> callback.onError("Failed to fetch user role: " + e.getMessage()));
     }
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> new-repo/master
     public interface OnAuthCompleteListener {
         void onSuccess(FirebaseUser user);
         void onFailure(String errorMessage);

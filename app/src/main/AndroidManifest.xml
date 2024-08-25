@@ -22,7 +22,11 @@
         android:theme="@style/Theme.DDU_E_CONNECT"
         tools:targetApi="31">
         <activity
+<<<<<<< HEAD
             android:name=".views.ClubsActivity"
+=======
+            android:name=".views.LogoutActivity"
+>>>>>>> new-repo/master
             android:exported="false" />
         <activity
             android:name=".views.PdfListActivity"
@@ -47,7 +51,12 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+<<<<<<< HEAD
             android:exported="true">
+=======
+            android:exported="true"
+            android:theme="@style/SplashTheme">
+>>>>>>> new-repo/master
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
