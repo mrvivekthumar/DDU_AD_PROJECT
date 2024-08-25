@@ -30,6 +30,8 @@ public class RegistrationActivity extends AppCompatActivity {
         String email = binding.emailEditText.getText().toString().trim();
         String password = binding.passwordEditText.getText().toString().trim();
 
+        binding.registerButton.setEnabled(false);
+
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;

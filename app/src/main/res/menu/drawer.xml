@@ -13,9 +13,9 @@
     </group>
     <group android:id="@+id/grp2">
         <item
-            android:id="@+id/feedback"
-            android:icon="@drawable/feedback"
-            android:title="Feedback" />
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout" />
 
         <item
             android:id="@+id/contact"

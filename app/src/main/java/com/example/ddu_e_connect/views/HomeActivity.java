@@ -42,6 +42,9 @@ public class HomeActivity extends AppCompatActivity {
                 if (id == R.id.papers) {
                     navigateToPapersActivity();
                 }
+                if (id == R.id.logout) {
+                    navigateToLogoutActivity();
+                }
                 // Close the drawer after the item is clicked
                 binding.drawlayout.closeDrawer(binding.navigationview);
                 return true;
@@ -74,6 +77,11 @@ public class HomeActivity extends AppCompatActivity {
 
         // Set click listener for upload PDF button
         binding.uploadPdfButton.setOnClickListener(v -> navigateToUploadActivity());
+    }
+
+    private void navigateToLogoutActivity() {
+        Intent intent = new Intent(HomeActivity.this, LogoutActivity.class);
+        startActivity(intent);
     }
 
     private void navigateToPapersActivity() {
