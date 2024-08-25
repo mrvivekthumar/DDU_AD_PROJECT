@@ -1,28 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- Rounded Profile Image Style -->
-    <style name="roundedImageView">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Custom Button Style -->
+    <style name="CustomButtonStyle">
+        <item name="android:background">@drawable/custom_button</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
     </style>
 
-    <!-- Custom SignIn Button Theme -->
-    <style name="CustomSignInButtonTheme" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@color/colorAccent</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:padding">12dp</item>
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@color/background</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
 
-    <!-- Custom Material Button Style -->
-    <style name="CustomMaterialButton" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@color/colorPrimary</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:padding">12dp</item>
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+    <!-- Splash screen theme -->
+    <style name="SplashTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen_background</item>
     </style>
-
 </resources>
