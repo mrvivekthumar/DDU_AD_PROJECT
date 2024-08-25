@@ -40,6 +40,18 @@
             android:textColor="@color/text_color2"
             android:textSize="18sp" />
 
+        <EditText
+            android:id="@+id/folderNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/custom_edittext"
+            android:drawablePadding="10dp"
+            android:hint="Enter folder name (optional)"
+            android:padding="12dp"
+            android:textColor="@color/text_color2"
+            android:textSize="18sp" />
+
         <Button
             android:id="@+id/selectPdfButton"
             android:layout_width="wrap_content"

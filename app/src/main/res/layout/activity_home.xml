@@ -1,34 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/drawlayout"
     android:background="@color/background"
-    android:padding="24dp">
+    tools:context=".views.HomeActivity">
 
-    <!-- Centered TextView -->
-    <TextView
-        android:id="@+id/welcomeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome to Home Activity!"
-        android:textColor="@color/text_color1"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="16dp" /> <!-- Added margin for spacing from the button -->
-
-    <!-- Button at the Bottom -->
-    <Button
-        android:id="@+id/uploadPdfButton"
+    <!-- Main content -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Upload PDF"
-        android:background="@color/button_background"
-        android:textColor="@color/button_text_color"
-        android:padding="16dp"
-        android:textSize="18sp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp" /> <!-- Added margin for spacing from the bottom -->
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <!-- Toolbar with Drawer Toggle Button -->
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/imgbtntoggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/navigation_icon"
+                android:background="@android:color/transparent"
+                android:contentDescription="Toggle Drawer"
+                android:padding="5dp"/>
+        </androidx.appcompat.widget.Toolbar>
+
+        <!-- Main content below the toolbar -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Centered TextView -->
+            <TextView
+                android:id="@+id/welcomeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome to Home Activity!"
+                android:textColor="@color/text_color1"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Button at the Bottom -->
+            <Button
+                android:id="@+id/uploadPdfButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload PDF"
+                android:background="@color/button_background"
+                android:textColor="@color/button_text_color"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="16dp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationview"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:menu="@menu/drawer"
+        app:dividerInsetStart="25dp"
+        app:itemIconPadding="30dp"
+        app:headerLayout="@layout/drawer_header"
+        android:layout_gravity="start"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>

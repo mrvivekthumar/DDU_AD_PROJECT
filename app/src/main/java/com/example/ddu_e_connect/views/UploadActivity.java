@@ -4,46 +4,58 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.ddu_e_connect.R;
+import com.example.ddu_e_connect.databinding.ActivityUploadBinding;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class UploadActivity extends AppCompatActivity {
 
-    private static final int PICK_PDF_REQUEST = 1;
-    private EditText pdfNameEditText;
-    private Button selectPdfButton;
-    private Button uploadPdfButton;
+    private ActivityUploadBinding binding;
     private Uri pdfUri;
+
+    private ActivityResultLauncher<Intent> pdfActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload);
 
-        pdfNameEditText = findViewById(R.id.pdfNameEditText);
-        selectPdfButton = findViewById(R.id.selectPdfButton);
-        uploadPdfButton = findViewById(R.id.uploadPdfButton);
+        binding = ActivityUploadBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        selectPdfButton.setOnClickListener(v -> {
-            Intent intent = new Intent();
+        // Register the ActivityResultLauncher
+        pdfActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        pdfUri = result.getData().getData();
+                        Log.d("UploadActivity", "PDF selected: " + pdfUri.toString());
+                        Toast.makeText(this, "PDF selected successfully.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("UploadActivity", "No PDF selected or selection was canceled.");
+                        Toast.makeText(this, "PDF selection failed.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        binding.selectPdfButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("application/pdf");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select PDF"), PICK_PDF_REQUEST);
+            pdfActivityResultLauncher.launch(Intent.createChooser(intent, "Select PDF"));
         });
 
-        uploadPdfButton.setOnClickListener(v -> {
-            String pdfName = pdfNameEditText.getText().toString().trim();
+        binding.uploadPdfButton.setOnClickListener(v -> {
+            String pdfName = binding.pdfNameEditText.getText().toString().trim();
+            String folderName = binding.folderNameEditText.getText().toString().trim();
+
             if (pdfUri != null && !pdfName.isEmpty()) {
-                uploadPdf(pdfUri, pdfName);
+                uploadPdf(pdfUri, pdfName, folderName);
             } else {
                 Log.e("UploadActivity", "No PDF selected or PDF name is empty.");
                 Toast.makeText(UploadActivity.this, "Please select a PDF and provide a name.", Toast.LENGTH_SHORT).show();
@@ -51,25 +63,36 @@ public class UploadActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_PDF_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            pdfUri = data.getData();
-            Log.d("UploadActivity", "PDF selected: " + pdfUri.toString());
-            Toast.makeText(this, "PDF selected successfully.", Toast.LENGTH_SHORT).show();
+    private void uploadPdf(Uri pdfUri, String pdfName, @Nullable String folderName) {
+        StorageReference storageReference;
+        if (folderName != null && !folderName.isEmpty()) {
+            storageReference = FirebaseStorage.getInstance()
+                    .getReference("uploads/" + folderName)
+                    .child(pdfName + ".pdf");
+            Log.d("UploadActivity", "Uploading to path: uploads/" + folderName + "/" + pdfName + ".pdf");
+        } else {
+            storageReference = FirebaseStorage.getInstance()
+                    .getReference("uploads")
+                    .child(pdfName + ".pdf");
+            Log.d("UploadActivity", "Uploading to path: uploads/" + pdfName + ".pdf");
         }
+
+        storageReference.putFile(pdfUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    Log.d("UploadActivity", "PDF uploaded successfully.");
+                    Toast.makeText(UploadActivity.this, "PDF uploaded successfully.", Toast.LENGTH_SHORT).show();
+                    navigateToHome();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("UploadActivity", "Failed to upload PDF: " + e.getMessage());
+                    Toast.makeText(UploadActivity.this, "Failed to upload PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
-    private void uploadPdf(Uri pdfUri, String pdfName) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("uploads").child(pdfName + ".pdf");
 
-        storageReference.putFile(pdfUri).addOnSuccessListener(taskSnapshot -> {
-            Log.d("UploadActivity", "PDF uploaded successfully.");
-            Toast.makeText(UploadActivity.this, "PDF uploaded successfully.", Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(e -> {
-            Log.e("UploadActivity", "Failed to upload PDF: " + e.getMessage());
-            Toast.makeText(UploadActivity.this, "Failed to upload PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+    private void navigateToHome() {
+        Intent intent = new Intent(UploadActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

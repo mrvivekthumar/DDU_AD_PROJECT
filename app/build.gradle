@@ -56,6 +56,13 @@ dependencies {
     implementation libs.firebase.storage.v2021
     implementation libs.firebase.auth.v2211
 
+//    For app check
+    implementation libs.firebase.appcheck
+    implementation libs.firebase.appcheck.safetynet
+
+//    For the card layout
+    implementation libs.cardview
+
 }
 
 apply plugin: 'com.google.gms.google-services'
