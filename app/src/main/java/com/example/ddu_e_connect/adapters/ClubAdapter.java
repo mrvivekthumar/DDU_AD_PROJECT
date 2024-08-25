@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ddu_e_connect.Model;
+import com.example.ddu_e_connect.model.Model;
 import com.example.ddu_e_connect.R;
 
 import java.util.ArrayList;

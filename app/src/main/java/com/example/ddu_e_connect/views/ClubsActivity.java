@@ -1,15 +1,12 @@
 package com.example.ddu_e_connect.views;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ddu_e_connect.Model;
+import com.example.ddu_e_connect.model.Model;
 import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.adapters.ClubAdapter;
 

@@ -1,4 +1,4 @@
-package com.example.ddu_e_connect;
+package com.example.ddu_e_connect.model;
 
 public class Model {
 

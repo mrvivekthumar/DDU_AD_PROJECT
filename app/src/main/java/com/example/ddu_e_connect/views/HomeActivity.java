@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,21 +40,16 @@ public class HomeActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 if (id == R.id.papers) {
                     navigateToPapersActivity();
-                }
-<<<<<<< HEAD
-                if (id == R.id.clubs) {
+                } else if (id == R.id.clubs) {
                     navigateToClubsActivity();
-=======
-                if (id == R.id.logout) {
+                } else if (id == R.id.logout) {
                     navigateToLogoutActivity();
->>>>>>> new-repo/master
                 }
                 // Close the drawer after the item is clicked
                 binding.drawlayout.closeDrawer(binding.navigationview);
                 return true;
             }
         });
-
 
         if (currentUser != null) {
             // Fetch user role from Firestore
@@ -84,14 +78,6 @@ public class HomeActivity extends AppCompatActivity {
         binding.uploadPdfButton.setOnClickListener(v -> navigateToUploadActivity());
     }
 
-<<<<<<< HEAD
-=======
-    private void navigateToLogoutActivity() {
-        Intent intent = new Intent(HomeActivity.this, LogoutActivity.class);
-        startActivity(intent);
-    }
-
->>>>>>> new-repo/master
     private void navigateToPapersActivity() {
         Intent intent = new Intent(HomeActivity.this, PapersActivity.class);
         startActivity(intent);
@@ -101,12 +87,14 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(HomeActivity.this, UploadActivity.class);
         startActivity(intent);
     }
-<<<<<<< HEAD
 
     private void navigateToClubsActivity() {
         Intent intent = new Intent(HomeActivity.this, ClubsActivity.class);
         startActivity(intent);
     }
-=======
->>>>>>> new-repo/master
+
+    private void navigateToLogoutActivity() {
+        Intent intent = new Intent(HomeActivity.this, LogoutActivity.class);
+        startActivity(intent);
+    }
 }
