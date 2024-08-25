@@ -2,6 +2,11 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
+<<<<<<< HEAD
+      <SelectionState runConfigName="DDU">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+=======
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -16,6 +21,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
+>>>>>>> new-repo/master
     </selectionStates>
   </component>
 </project>

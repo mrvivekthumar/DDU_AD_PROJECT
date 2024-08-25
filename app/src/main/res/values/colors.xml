@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<<<<<<< HEAD
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
     <color name="white">#FFFFFF</color>
 
+    //dark background for clubs
+    <color name="background_dark">#121212</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#E0E0E0</color>
+
+=======
+    <color name="white">#FFFFFF</color>
+
+>>>>>>> new-repo/master
     <color name="background">#000814</color>
     <color name="EditText_background">#161D29</color>
 
@@ -13,6 +26,8 @@
     <color name="text_color1">#2CDFF1</color>
     <color name="text_color2">#EAEBF8</color>
     <color name="button_border">#EAEBF8</color>
+<<<<<<< HEAD
+=======
 
 
     <!-- Dark Colors -->
@@ -21,4 +36,5 @@
     <color name="colorAccent">#BB86FC</color>
     <color name="background2">#121212</color>
     <color name="textColor">#E0E0E0</color>
+>>>>>>> new-repo/master
 </resources>

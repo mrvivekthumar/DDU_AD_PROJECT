@@ -42,8 +42,13 @@ public class HomeActivity extends AppCompatActivity {
                 if (id == R.id.papers) {
                     navigateToPapersActivity();
                 }
+<<<<<<< HEAD
+                if (id == R.id.clubs) {
+                    navigateToClubsActivity();
+=======
                 if (id == R.id.logout) {
                     navigateToLogoutActivity();
+>>>>>>> new-repo/master
                 }
                 // Close the drawer after the item is clicked
                 binding.drawlayout.closeDrawer(binding.navigationview);
@@ -79,11 +84,14 @@ public class HomeActivity extends AppCompatActivity {
         binding.uploadPdfButton.setOnClickListener(v -> navigateToUploadActivity());
     }
 
+<<<<<<< HEAD
+=======
     private void navigateToLogoutActivity() {
         Intent intent = new Intent(HomeActivity.this, LogoutActivity.class);
         startActivity(intent);
     }
 
+>>>>>>> new-repo/master
     private void navigateToPapersActivity() {
         Intent intent = new Intent(HomeActivity.this, PapersActivity.class);
         startActivity(intent);
@@ -93,4 +101,12 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(HomeActivity.this, UploadActivity.class);
         startActivity(intent);
     }
+<<<<<<< HEAD
+
+    private void navigateToClubsActivity() {
+        Intent intent = new Intent(HomeActivity.this, ClubsActivity.class);
+        startActivity(intent);
+    }
+=======
+>>>>>>> new-repo/master
 }
