@@ -1,13 +1,13 @@
 package com.example.ddu_e_connect.model;
 
-public class Model {
+public class ClubsModel {
 
     private String clubName;
     private String clubDescription;
     private boolean isExpanded;
     private int clubLogoResId;
 
-    public Model(String clubName, String clubDescription, boolean isExpanded, int clubLogoResId) {
+    public ClubsModel(String clubName, String clubDescription, boolean isExpanded, int clubLogoResId) {
         this.clubName = clubName;
         this.clubDescription = clubDescription;
         this.isExpanded = isExpanded;

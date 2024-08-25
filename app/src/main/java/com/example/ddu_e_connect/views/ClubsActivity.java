@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ddu_e_connect.model.Model;
+import com.example.ddu_e_connect.model.ClubsModel;
 import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.adapters.ClubAdapter;
 
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class ClubsActivity extends AppCompatActivity {
 
-    ArrayList<Model> arrayList;
+    ArrayList<ClubsModel> arrayList;
     RecyclerView recyclerView;
     ClubAdapter adapter;
 
@@ -26,7 +26,7 @@ public class ClubsActivity extends AppCompatActivity {
         arrayList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerview);
 
-        arrayList.add(new Model("CSI DDU\n" , "Computer Society of India, DDU Chapter\n\n" +
+        arrayList.add(new ClubsModel("CSI DDU\n" , "Computer Society of India, DDU Chapter\n\n" +
                 "President: Nisarg Amlan\n" +
                 "Vice President: Om Unadakat\n\n" +
                 "Established: 2010\n\n" +
@@ -38,7 +38,7 @@ public class ClubsActivity extends AppCompatActivity {
                 "Our mission is to support continuous growth for IT professionals through research, knowledge sharing, and skill enhancement, and to provide a platform for newcomers to seamlessly integrate into the IT community.\n",
                 false, R.drawable.csi_logo));
 
-        arrayList.add(new Model("GDSC\n", "GDSC DDU\n\n" +
+        arrayList.add(new ClubsModel("GDSC\n", "GDSC DDU\n\n" +
                 "President: Vashisth Patel\n" +
                 "Vice President: Kunj Patel\n\n" +
                 "Established: [Year]\n\n" +
@@ -46,7 +46,7 @@ public class ClubsActivity extends AppCompatActivity {
                 "Welcome to the official page of the Google Developer Student Club (GDSC) at Dharmsinh Desai University. We are a community of developers passionate about building solutions to real-world problems and sharing knowledge within our university. Join us as we learn, connect, and grow together in the exciting world of technology.\n",
                 false, R.drawable.gdsc_logo));
 
-        arrayList.add(new Model("IETE\n", "IETE Student's Forum DDU\n\n" +
+        arrayList.add(new ClubsModel("IETE\n", "IETE Student's Forum DDU\n\n" +
                 "President: Nisarg Pipaliya\n" +
                 "Vice President: [Name]\n\n" +
                 "Established: 2011\n\n" +
@@ -54,7 +54,7 @@ public class ClubsActivity extends AppCompatActivity {
                 "We are the IETE Students Forum (ISF), a vibrant community dedicated to fostering collaboration, learning, and professional development among our members. Together, we embark on a journey of discovery, learning, and growth, aiming to harness our potential, break barriers, and leave a lasting impact on the realm of technology.\n",
                 false, R.drawable.iete_logo));
 
-        arrayList.add(new Model("Shutterbugs DDU\n", "Shutterbugs DDU\n\n"+"President: Heet Vadiya\n" +
+        arrayList.add(new ClubsModel("Shutterbugs DDU\n", "Shutterbugs DDU\n\n"+"President: Heet Vadiya\n" +
                 "Vice President: Mahek Purohit\n\n" +
                 "Established: 2013\n\n" +
                 "Overview:\n\n" +
@@ -62,26 +62,26 @@ public class ClubsActivity extends AppCompatActivity {
                 "\n\uD83D\uDCDE Contact: 6351072003\n",
                 false, R.drawable.shutterbugs_ddu_logo));
 
-        arrayList.add(new Model("Samvaad DDU\n", "Samvaad DDU\n\n"+"Founder: Jainish Shah\n\n" +
+        arrayList.add(new ClubsModel("Samvaad DDU\n", "Samvaad DDU\n\n"+"Founder: Jainish Shah\n\n" +
                 "Established: October 16, 2019\n" +
                 "\n\nOverview:\n\n" +
                 "SAMVAAD is the communication club of DDU, Nadiad. Our motto, \"Verbalizing Minds,\" reflects our dedication to helping individuals overcome communication barriers and develop essential skills like public speaking and effective communication. Through events like group discussions, debates, extempore, seminars, and guest lectures, we provide a platform for self-development and leadership.\n",
                 false, R.drawable.samvaad_logo));
 
-        arrayList.add(new Model("Malgadi-DDU\n", "Malgadi-DDU\n\n"+"President: Hitarth Patel\n\n" +
+        arrayList.add(new ClubsModel("Malgadi-DDU\n", "Malgadi-DDU\n\n"+"President: Hitarth Patel\n\n" +
                 "Established: 2016-17\n\n" +
                 "Overview:\n\n" +
                 "Malgadi is a non-profit startup at Dharmsinh Desai University, providing students with all their engineering needs at guaranteed lowest prices. We are committed to serving our community by offering a wide range of products and services tailored to meet the needs of our fellow students.\n",
                 false, R.drawable.malgadi_logo));
 
-        arrayList.add(new Model("Decrypters-The Coding Club\n", "Decrypters-The Coding Club\n\n"+"President: [Name]\n" +
+        arrayList.add(new ClubsModel("Decrypters-The Coding Club\n", "Decrypters-The Coding Club\n\n"+"President: [Name]\n" +
                 "Vice President: [Name]\n\n" +
                 "Established: 2020\n\n" +
                 "Overview:\n\n" +
                 "The Decrypters Club, managed by the Department of IT, is dedicated to fostering competitive programming skills within our campus. We organize live sessions, coding contests, webinars, and meetings to spread knowledge about problem-solving skills, data structures, and algorithms. Join us to enhance your coding skills and become a part of our vibrant community.\n",
                 false, R.drawable.decrypters_logo));
 
-        arrayList.add(new Model("SPORTS CLUB FOT DDU\n", "SPORTS CLUB FOT DDU\n\n"+"President: [Name]\n" +
+        arrayList.add(new ClubsModel("SPORTS CLUB FOT DDU\n", "SPORTS CLUB FOT DDU\n\n"+"President: [Name]\n" +
                 "Vice President: [Name]\n\n" +
                 "Established: 2021\n\n" +
                 "Overview:\n\n" +

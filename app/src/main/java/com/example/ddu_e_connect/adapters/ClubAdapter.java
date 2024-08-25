@@ -11,17 +11,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ddu_e_connect.model.Model;
+import com.example.ddu_e_connect.model.ClubsModel;
 import com.example.ddu_e_connect.R;
 
 import java.util.ArrayList;
 
 public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
 
-    ArrayList<Model> arrayList;
+    ArrayList<ClubsModel> arrayList;
     Context context;
 
-    public ClubAdapter(ArrayList<Model> arrayList, Context context) {
+    public ClubAdapter(ArrayList<ClubsModel> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
     }
@@ -35,7 +35,7 @@ public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        Model model = arrayList.get(position);
+        ClubsModel model = arrayList.get(position);
         holder.clubName.setText(model.getClubName());
         holder.clubLogo.setImageResource(model.getClubLogo());
 
