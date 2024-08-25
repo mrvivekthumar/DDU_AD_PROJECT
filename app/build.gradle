@@ -1,0 +1,68 @@
+plugins {
+    alias(libs.plugins.android.application)
+    id 'com.google.gms.google-services'
+}
+
+android {
+    namespace 'com.example.ddu_e_connect'
+    compileSdk 34
+
+    viewBinding{
+        enable = true
+    }
+
+    defaultConfig {
+        applicationId "com.example.ddu_e_connect"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+    implementation libs.glide
+
+//    Firebase authentication dependency
+    implementation libs.google.firebase.auth
+    implementation platform(libs.firebase.bom.v3320)
+    implementation libs.play.services.auth
+
+
+//    Firebase Storage dependency
+    implementation libs.firebase.firestore
+    implementation libs.firebase.storage.v2021
+    implementation libs.firebase.auth.v2211
+
+//    For app check
+    implementation libs.firebase.appcheck
+    implementation libs.firebase.appcheck.safetynet
+
+//    For the card layout
+    implementation libs.cardview
+
+}
+
+apply plugin: 'com.google.gms.google-services'
