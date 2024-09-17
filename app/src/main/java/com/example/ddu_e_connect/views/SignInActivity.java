@@ -19,7 +19,7 @@ public class SignInActivity extends AppCompatActivity {
     private AuthController authController;
 
     // Regex pattern for the specific email format
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^\\d{2}[a-zA-Z]{5}@ddu\\.ac\\.in$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^\\d{2}[a-zA-Z]{5}\\d{3}@ddu\\.ac\\.in$");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

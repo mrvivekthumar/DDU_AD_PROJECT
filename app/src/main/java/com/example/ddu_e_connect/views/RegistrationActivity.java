@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
 
 public class RegistrationActivity extends AppCompatActivity {
     private static final String TAG = "RegistrationActivity";
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^\\d{2}[a-zA-Z]{5}@ddu\\.ac\\.in$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^\\d{2}[a-zA-Z]{5}\\d{3}@ddu\\.ac\\.in$");
+
     private ActivityRegistrationBinding binding;
     private AuthController authController;
 
