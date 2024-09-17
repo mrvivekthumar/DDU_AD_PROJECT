@@ -1,6 +1,5 @@
 package com.example.ddu_e_connect.adapters;
 
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ddu_e_connect.model.ClubsModel;
 import com.example.ddu_e_connect.R;
+import com.example.ddu_e_connect.model.ClubsModel;
 
 import java.util.ArrayList;
 
 public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
 
-    ArrayList<ClubsModel> arrayList;
-    Context context;
+    private ArrayList<ClubsModel> arrayList;
+    private Context context;
+    private int lastPosition = -1;
 
     public ClubAdapter(ArrayList<ClubsModel> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -39,17 +39,25 @@ public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
         holder.clubName.setText(model.getClubName());
         holder.clubLogo.setImageResource(model.getClubLogo());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.clubDescription.getVisibility() == View.GONE) {
-                    holder.clubDescription.setVisibility(View.VISIBLE);
-                    holder.clubDescription.setText(model.getClubDescription());
-                } else {
-                    holder.clubDescription.setVisibility(View.GONE);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (holder.clubDescription.getVisibility() == View.GONE) {
+                holder.clubDescription.setVisibility(View.VISIBLE);
+                holder.clubDescription.setText(model.getClubDescription());
+            } else {
+                holder.clubDescription.setVisibility(View.GONE);
             }
         });
+
+        // Apply slide_in_left animation
+        // Apply animations
+        if (position > lastPosition) {
+            if (position % 2 != 0) {
+                holder.itemView.setAnimation(android.view.animation.AnimationUtils.loadAnimation(context, R.anim.slide_in_left));
+            } else {
+                holder.itemView.setAnimation(android.view.animation.AnimationUtils.loadAnimation(context, R.anim.slide_in_right));
+            }
+            lastPosition = position;
+        }
     }
 
     @Override
@@ -57,7 +65,7 @@ public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
         return arrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView clubName, clubDescription;
         ImageView clubLogo;

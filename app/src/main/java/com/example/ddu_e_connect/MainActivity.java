@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        splash screen added
         setContentView(R.layout.splash_screen);
 
         // Initialize Firebase App Check with SafetyNet provider

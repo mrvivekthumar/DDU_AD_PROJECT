@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/navy_blue">
+
+    <!-- Spacer to push cards to center -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Admin 1 Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/admin_card_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="@color/text_color2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="32dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/admin1_image"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                android:src="@drawable/admin1_image"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/admin1_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin 1 Name"
+                android:textSize="22sp"
+                android:textColor="@color/purple"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:id="@+id/admin1_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="admin1@example.com"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Admin 2 Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/admin_card_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="@color/text_color2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="32dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/admin2_image"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                android:src="@drawable/admin2_image"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/admin2_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin 2 Name"
+                android:textSize="22sp"
+                android:textColor="@color/purple"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:id="@+id/admin2_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="admin2@example.com"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Spacer to push cards to center -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

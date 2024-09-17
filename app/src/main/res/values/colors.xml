@@ -11,8 +11,7 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#E0E0E0</color>
 
-
-
+    <color name="black">#FF000000</color>
 
     <color name="background">#000814</color>
     <color name="EditText_background">#161D29</color>
@@ -24,7 +23,8 @@
     <color name="text_color2">#EAEBF8</color>
     <color name="button_border">#EAEBF8</color>
 
-
+    <color name="navy_blue">#003366</color>
+    <color name="purple">#6A0D91</color>
 
     <!-- Dark Colors -->
     <color name="background2">#121212</color>

@@ -63,6 +63,9 @@ dependencies {
 //    For the card layout
     implementation libs.cardview
 
+
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'
