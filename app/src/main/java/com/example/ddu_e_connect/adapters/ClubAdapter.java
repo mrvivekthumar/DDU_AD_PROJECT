@@ -1,6 +1,8 @@
 package com.example.ddu_e_connect.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +41,11 @@ public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
         holder.clubName.setText(model.getClubName());
         holder.clubLogo.setImageResource(model.getClubLogo());
 
+        // Set clickable social media icons
+        holder.linkedInLogo.setOnClickListener(v -> openLink(model.getLinkedInUrl()));
+        holder.instagramLogo.setOnClickListener(v -> openLink(model.getInstagramUrl()));
+        holder.websiteLogo.setOnClickListener(v -> openLink(model.getWebsiteUrl()));
+
         holder.itemView.setOnClickListener(v -> {
             if (holder.clubDescription.getVisibility() == View.GONE) {
                 holder.clubDescription.setVisibility(View.VISIBLE);
@@ -48,7 +55,6 @@ public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
             }
         });
 
-        // Apply slide_in_left animation
         // Apply animations
         if (position > lastPosition) {
             if (position % 2 != 0) {
@@ -60,6 +66,13 @@ public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
         }
     }
 
+    private void openLink(String url) {
+        if (url != null && !url.isEmpty()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(intent);
+        }
+    }
+
     @Override
     public int getItemCount() {
         return arrayList.size();
@@ -68,7 +81,7 @@ public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView clubName, clubDescription;
-        ImageView clubLogo;
+        ImageView clubLogo, linkedInLogo, instagramLogo, websiteLogo;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,6 +89,9 @@ public class ClubAdapter extends RecyclerView.Adapter<ClubAdapter.ViewHolder> {
             clubName = itemView.findViewById(R.id.club_name);
             clubDescription = itemView.findViewById(R.id.club_description);
             clubLogo = itemView.findViewById(R.id.club_logo);
+            linkedInLogo = itemView.findViewById(R.id.linkedin_icon);
+            instagramLogo = itemView.findViewById(R.id.instagram_icon);
+            websiteLogo = itemView.findViewById(R.id.website_icon);
         }
     }
 }

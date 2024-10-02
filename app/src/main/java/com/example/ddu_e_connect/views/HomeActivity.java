@@ -33,7 +33,6 @@ public class HomeActivity extends AppCompatActivity {
         // Open Drawer on Button Click
         binding.imgbtntoggle.setOnClickListener(view -> binding.drawlayout.openDrawer(binding.navigationview));
 
-        // Set up Navigation Item Selected Listener
         binding.navigationview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
