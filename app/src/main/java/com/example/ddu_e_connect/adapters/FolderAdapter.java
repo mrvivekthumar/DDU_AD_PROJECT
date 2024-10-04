@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,13 +11,17 @@ import com.example.ddu_e_connect.R;
 
 import java.util.List;
 
-// In FolderAdapter.java
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
-    private List<String> itemList;
+
+    private List<String> folderList;
     private OnItemClickListener onItemClickListener;
 
-    public FolderAdapter(List<String> itemList, OnItemClickListener onItemClickListener) {
-        this.itemList = itemList;
+    public interface OnItemClickListener {
+        void onItemClick(String folder);
+    }
+
+    public FolderAdapter(List<String> folderList, OnItemClickListener onItemClickListener) {
+        this.folderList = folderList;
         this.onItemClickListener = onItemClickListener;
     }
 
@@ -31,27 +34,26 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String item = itemList.get(position);
-        holder.nameTextView.setText(item);
-
-        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(item));
+        String folderName = folderList.get(position);
+        holder.folderNameTextView.setText(folderName);
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(folderName);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return itemList.size();
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(String itemName);
+        return folderList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView;
+        TextView folderNameTextView;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.folderNameTextView);
+            folderNameTextView = itemView.findViewById(R.id.folderNameTextView); // Ensure you have this ID in your XML layout
         }
     }
 }
