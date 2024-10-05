@@ -69,7 +69,7 @@ public class ClubsActivity extends AppCompatActivity {
                         "We are the IETE Students Forum (ISF), a vibrant community dedicated to fostering collaboration, learning, and professional development among our members. Together, we embark on a journey of discovery, learning, and growth, aiming to harness our potential, break barriers, and leave a lasting impact on the realm of technology.\n",
                 false, R.drawable.iete_logo,
                 "https://www.linkedin.com/company/tech-tribe-the-community/",
-                "https://www.instagram.com/csi_ddu/",
+                "https://www.linkedin.com/company/tech-tribe-the-community/",
                 "https://isf-website.vercel.app/"
         ));
 
