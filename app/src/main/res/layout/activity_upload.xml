@@ -38,6 +38,7 @@
             android:hint="Enter PDF file name"
             android:padding="12dp"
             android:textColor="@color/text_color2"
+            android:textColorHint="@color/EditText_text_color"
             android:textSize="18sp" />
 
         <EditText
@@ -50,6 +51,7 @@
             android:hint="Enter folder name (optional)"
             android:padding="12dp"
             android:textColor="@color/text_color2"
+            android:textColorHint="@color/EditText_text_color"
             android:textSize="18sp" />
 
         <Button

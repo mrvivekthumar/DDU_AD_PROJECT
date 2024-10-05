@@ -23,7 +23,8 @@
             android:drawablePadding="10dp"
             android:hint="Email"
             android:padding="12dp"
-            android:textColor="@color/EditText_text_color" />
+            android:textColor="@color/EditText_text_color"
+            android:textColorHint="@color/EditText_text_color" />
 
         <!-- Password EditText -->
         <EditText
@@ -36,7 +37,8 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:padding="12dp"
-            android:textColor="@color/EditText_text_color" />
+            android:textColor="@color/EditText_text_color"
+            android:textColorHint="@color/EditText_text_color" />
 
         <!-- "Forgot Password?" Link -->
         <TextView

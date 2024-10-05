@@ -11,43 +11,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            android:textColor="@color/EditText_text_color"
-            android:background="@drawable/custom_edittext"
-            android:padding="12dp"
             android:layout_marginBottom="16dp"
+            android:background="@drawable/custom_edittext"
+            android:drawableLeft="@drawable/ic_email"
             android:drawablePadding="10dp"
-            android:drawableLeft="@drawable/ic_email"/>
+            android:hint="Email"
+            android:padding="12dp"
+            android:textColor="@color/EditText_text_color"
+            android:textColorHint="@color/EditText_text_color" />
 
         <EditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:textColor="@color/EditText_text_color"
-            android:background="@drawable/custom_edittext"
-            android:padding="12dp"
             android:layout_marginBottom="24dp"
-            android:drawablePadding="10dp"
+            android:background="@drawable/custom_edittext"
             android:drawableStart="@drawable/ic_lock"
-            android:inputType="textPassword"/>
+            android:drawablePadding="10dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:textColor="@color/EditText_text_color"
+            android:textColorHint="@color/EditText_text_color" />
 
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Register"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/custom_button"
-            android:textColor="@color/button_text_color"
             android:padding="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:text="Register"
+            android:textColor="@color/button_text_color" />
     </LinearLayout>
 
     <!-- Bottom Link -->
