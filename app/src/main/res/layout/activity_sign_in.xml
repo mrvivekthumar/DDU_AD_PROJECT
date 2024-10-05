@@ -52,7 +52,6 @@
             android:textColor="@color/text_color1"
             android:textSize="14sp" />
 
-
         <Button
             android:id="@+id/signInButton"
             android:layout_width="match_parent"
@@ -61,10 +60,8 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/custom_button"
             android:padding="16dp"
-            android:text="Sign In"
-            android:textColor="@color/button_text_color" />
+            android:text="Sign In" />
     </LinearLayout>
-
 
     <!-- "Don't have an account? Register" Link -->
     <TextView

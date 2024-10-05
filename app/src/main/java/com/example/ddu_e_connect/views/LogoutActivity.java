@@ -45,6 +45,9 @@ public class LogoutActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 // Redirect to SignInActivity after successful logout
                 Intent intent = new Intent(LogoutActivity.this, com.example.ddu_e_connect.views.SignInActivity.class);
+
+                // Clear the activity stack so that the user cannot go back to the home activity
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
             } else {

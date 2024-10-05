@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:backgroundTint="@color/background"
-    card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="4dp">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/folderNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/folderNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_edittext"
-            android:padding="12dp"
-            android:textAlignment="center"
-            android:textColor="@color/text_color1"
-            android:textSize="18sp" />
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+        android:textSize="18sp"
+        android:textColor="@android:color/black" />
+</LinearLayout>
