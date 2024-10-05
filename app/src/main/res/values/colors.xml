@@ -29,5 +29,11 @@
     <!-- Dark Colors -->
     <color name="background2">#121212</color>
     <color name="textColor">#E0E0E0</color>
+    <color name="divider_color">#FFCCCCCC</color> <!-- Light gray -->
+    <color name="card_background">#FF1A1A1A</color> <!-- Dark gray for cards -->
+    <color name="card_border">#FF6200EE</color> <!-- Purple border -->
+
+    <color name="purple_600">#8E24AA</color>
+
 
 </resources>

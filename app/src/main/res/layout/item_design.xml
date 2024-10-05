@@ -36,7 +36,8 @@
             app:layout_constraintStart_toEndOf="@id/club_logo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/club_description"
-            android:paddingStart="8dp"/>
+            android:paddingStart="8dp"
+            android:paddingTop="10dp"/>
 
         <TextView
             android:id="@+id/club_description"
@@ -51,6 +52,37 @@
             android:paddingTop="5dp"
             android:paddingLeft="20dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Social Media Icons -->
+        <LinearLayout
+            android:id="@+id/social_media_icons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/club_description"
+            app:layout_constraintStart_toStartOf="@id/club_name"
+            android:paddingTop="0dp"
+            android:paddingStart="12dp">
 
+            <ImageView
+                android:id="@+id/linkedin_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/linked_in_logo" />
+
+            <ImageView
+                android:id="@+id/instagram_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/instagram_logo"
+                android:layout_marginStart="8dp" />
+
+            <ImageView
+                android:id="@+id/website_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/web_logo"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
