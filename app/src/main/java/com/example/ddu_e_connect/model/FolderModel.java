@@ -2,18 +2,18 @@ package com.example.ddu_e_connect.model;
 
 public class FolderModel {
     private String name;
+    private boolean isPdf; // Flag to determine if it's a PDF
 
-    public FolderModel() { }
-
-    public FolderModel(String name) {
+    public FolderModel(String name, boolean isPdf) {
         this.name = name;
+        this.isPdf = isPdf;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public boolean isPdf() {
+        return isPdf; // Getter for isPdf
     }
 }

@@ -7,6 +7,10 @@ android {
     namespace 'com.example.ddu_e_connect'
     compileSdk 34
 
+    buildFeatures {
+        dataBinding true
+    }
+
     viewBinding{
         enable = true
     }

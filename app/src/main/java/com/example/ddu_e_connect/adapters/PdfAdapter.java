@@ -18,16 +18,22 @@ public class PdfAdapter extends RecyclerView.Adapter<PdfAdapter.PdfViewHolder> {
 
     private Context context;
     private List<PdfModel> pdfList;
+    private OnPdfClickListener onPdfClickListener;  // Add the OnPdfClickListener
 
-    public PdfAdapter(Context context, List<PdfModel> pdfList) {
+    public interface OnPdfClickListener {
+        void onPdfClick(PdfModel pdfModel);
+    }
+
+    public PdfAdapter(Context context, List<PdfModel> pdfList, OnPdfClickListener onPdfClickListener) {
         this.context = context;
         this.pdfList = pdfList;
+        this.onPdfClickListener = onPdfClickListener;  // Initialize the listener
     }
 
     @NonNull
     @Override
     public PdfViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(com.example.ddu_e_connect.R.layout.item_pdf, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_pdf, parent, false);
         return new PdfViewHolder(view);
     }
 
@@ -35,6 +41,13 @@ public class PdfAdapter extends RecyclerView.Adapter<PdfAdapter.PdfViewHolder> {
     public void onBindViewHolder(@NonNull PdfViewHolder holder, int position) {
         PdfModel pdfModel = pdfList.get(position);
         holder.pdfNameTextView.setText(pdfModel.getName());
+
+        // Set a click listener for the item
+        holder.itemView.setOnClickListener(v -> {
+            if (onPdfClickListener != null) {
+                onPdfClickListener.onPdfClick(pdfModel);
+            }
+        });
     }
 
     @Override

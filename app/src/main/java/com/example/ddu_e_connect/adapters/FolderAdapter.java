@@ -3,42 +3,53 @@ package com.example.ddu_e_connect.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ddu_e_connect.R;
+import com.example.ddu_e_connect.model.FolderModel;
 
 import java.util.List;
 
-public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
+public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderViewHolder> {
 
-    private List<String> folderList;
-    private OnItemClickListener onItemClickListener;
+    private List<FolderModel> folderList;
+    private OnFolderClickListener onFolderClickListener;
 
-    public interface OnItemClickListener {
-        void onItemClick(String folder);
+    public interface OnFolderClickListener {
+        void onFolderClick(FolderModel folder);
     }
 
-    public FolderAdapter(List<String> folderList, OnItemClickListener onItemClickListener) {
+    public FolderAdapter(List<FolderModel> folderList, OnFolderClickListener onFolderClickListener) {
         this.folderList = folderList;
-        this.onItemClickListener = onItemClickListener;
+        this.onFolderClickListener = onFolderClickListener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_folder, parent, false);
-        return new ViewHolder(view);
+    public FolderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_folder, parent, false); // Use the new layout
+        return new FolderViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String folderName = folderList.get(position);
-        holder.folderNameTextView.setText(folderName);
+    public void onBindViewHolder(@NonNull FolderViewHolder holder, int position) {
+        FolderModel folder = folderList.get(position);
+        holder.folderNameTextView.setText(folder.getName());
+
+        // Set the icon based on whether it's a PDF or a folder
+        if (folder.isPdf()) {
+            holder.folderIcon.setImageResource(R.drawable.ic_pdf); // PDF icon
+        } else {
+            holder.folderIcon.setImageResource(R.drawable.ic_folder); // Folder icon
+        }
+
         holder.itemView.setOnClickListener(v -> {
-            if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(folderName);
+            if (onFolderClickListener != null) {
+                onFolderClickListener.onFolderClick(folder);
             }
         });
     }
@@ -48,12 +59,14 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         return folderList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView folderNameTextView;
+    public static class FolderViewHolder extends RecyclerView.ViewHolder {
+        public TextView folderNameTextView;
+        public ImageView folderIcon;
 
-        public ViewHolder(View itemView) {
+        public FolderViewHolder(View itemView) {
             super(itemView);
-            folderNameTextView = itemView.findViewById(R.id.folderNameTextView); // Ensure you have this ID in your XML layout
+            folderNameTextView = itemView.findViewById(R.id.item_name); // Ensure this matches the new layout
+            folderIcon = itemView.findViewById(R.id.item_icon); // Ensure this matches the new layout
         }
     }
 }

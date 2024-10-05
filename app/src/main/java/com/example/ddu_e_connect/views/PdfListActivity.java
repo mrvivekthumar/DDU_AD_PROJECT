@@ -1,70 +1,63 @@
 package com.example.ddu_e_connect.views;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.adapters.PdfAdapter;
 import com.example.ddu_e_connect.model.PdfModel;
-import com.example.ddu_e_connect.R;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PdfListActivity extends AppCompatActivity {
 
+    private RecyclerView recyclerView;
     private PdfAdapter pdfAdapter;
     private List<PdfModel> pdfList = new ArrayList<>();
-    private FirebaseFirestore firestore;
-    private String folderName;
-    private RecyclerView recyclerView;
-    private ProgressBar progressBar;
+    private FirebaseStorage storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pdf_list); // Set layout using resource ID
-
-        // Set up toolbar
-        setSupportActionBar(findViewById(R.id.toolbar));
-
-        // Initialize views using findViewById
+        setContentView(R.layout.activity_pdf_list);  // Adjust the layout accordingly
         recyclerView = findViewById(R.id.recycler_view);
-        progressBar = findViewById(R.id.progressBar);
-
-        firestore = FirebaseFirestore.getInstance();
-        folderName = getIntent().getStringExtra("FOLDER_NAME");
-
-        setupRecyclerView();
-        loadPdfs();
-    }
-
-    private void setupRecyclerView() {
-        pdfAdapter = new PdfAdapter(this, pdfList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        storage = FirebaseStorage.getInstance();
+
+        // Initialize the PdfAdapter with the OnPdfClickListener
+        pdfAdapter = new PdfAdapter(this, pdfList, this::onPdfClick);
         recyclerView.setAdapter(pdfAdapter);
+
+        loadPdfFiles();  // Load your PDF files
     }
 
-    private void loadPdfs() {
-        progressBar.setVisibility(View.VISIBLE); // Show loading indicator
-        firestore.collection("folders").document(folderName).collection("pdfs").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    pdfList.clear();
-                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                        PdfModel pdf = document.toObject(PdfModel.class);
-                        pdfList.add(pdf);
-                    }
-                    pdfAdapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE); // Hide loading indicator
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("PdfListActivity", "Failed to load PDFs: " + e.getMessage());
-                    progressBar.setVisibility(View.GONE); // Hide loading indicator
-                });
+    private void loadPdfFiles() {
+        // Load your PDF files from Firebase
+        StorageReference pdfRef = storage.getReference().child("path_to_your_pdfs"); // Update this path
+        pdfRef.listAll().addOnSuccessListener(listResult -> {
+            pdfList.clear();
+            for (StorageReference item : listResult.getItems()) {
+                String pdfName = item.getName();
+                String pdfUrl = item.getDownloadUrl().toString();
+                pdfList.add(new PdfModel(pdfName, pdfUrl));  // Assuming you have a proper PdfModel constructor
+            }
+            pdfAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> {
+            Log.e("PdfListActivity", "Failed to load PDFs.", e);
+            Toast.makeText(this, "Failed to load PDFs.", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void onPdfClick(PdfModel pdfModel) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.parse(pdfModel.getUrl()), "application/pdf");
+        startActivity(intent);
     }
 }
