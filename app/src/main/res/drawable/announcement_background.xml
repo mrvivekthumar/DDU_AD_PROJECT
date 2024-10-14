@@ -1,0 +1,11 @@
+<!-- res/drawable/announcement_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#1E1E1E" /> <!-- Background color for each announcement -->
+    <corners android:radius="8dp" /> <!-- Rounded corners -->
+    <padding
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp" /> <!-- Padding inside the announcement box -->
+    <stroke android:color="#3F51B5" android:width="2dp" /> <!-- Border with color -->
+</shape>

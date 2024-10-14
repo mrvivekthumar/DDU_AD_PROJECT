@@ -5,13 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/navy_blue">
-
-    <!-- Spacer to push cards to center -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+    android:gravity="center"
+    android:background="@color/background">
 
     <!-- Admin 1 Card -->
     <androidx.cardview.widget.CardView
@@ -19,15 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="12dp"
-        app:cardBackgroundColor="@color/text_color2">
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/colorPrimaryDark"
+        android:layout_gravity="center">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="32dp">
+            android:padding="32dp"
+            android:background="@drawable/admincard_background">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/admin1_image"
@@ -45,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="Admin 1 Name"
                 android:textSize="22sp"
-                android:textColor="@color/purple"
+                android:textColor="@color/text_color1"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
@@ -54,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:text="admin1@example.com"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_color1"
                 android:layout_gravity="center_horizontal" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -65,15 +61,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="12dp"
-        app:cardBackgroundColor="@color/text_color2">
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/colorPrimaryDark"
+        android:layout_gravity="center">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="32dp">
+            android:padding="32dp"
+            android:background="@drawable/admincard_background">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/admin2_image"
@@ -91,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:text="Admin 2 Name"
                 android:textSize="22sp"
-                android:textColor="@color/purple"
+                android:textColor="@color/text_color1"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
@@ -100,14 +97,9 @@
                 android:layout_height="wrap_content"
                 android:text="admin2@example.com"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_color1"
                 android:layout_gravity="center_horizontal" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Spacer to push cards to center -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
 </LinearLayout>

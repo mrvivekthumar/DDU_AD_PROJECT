@@ -32,7 +32,9 @@ public class HomeActivity extends AppCompatActivity {
     // For announcements
     private ArrayList<String> announcements;
     private ArrayList<String> announcementUrls;
-    private LinearLayout innerLayout; // To reference the inner layout for animation
+    private LinearLayout announcementsContainer; // To reference the layout for scrolling animation
+    private boolean isScrolling = false; // Flag to control scrolling
+    private int animationDuration = 20000; // Duration for the scrolling animation
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +72,9 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         if (currentUser != null) {
-            // Fetch user role from Firestore
             authController.fetchUserRole(currentUser.getUid(), new AuthController.RoleCallback() {
                 @Override
                 public void onRoleFetched(String role) {
-                    // Show or hide upload PDF button based on user role
                     if ("helper".equalsIgnoreCase(role) || "admin".equalsIgnoreCase(role)) {
                         binding.uploadPdfButton.setVisibility(View.VISIBLE);
                     } else {
@@ -84,7 +84,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(String errorMessage) {
-                    // Handle role fetch error
                     Log.e("HomeActivity", "Error fetching user role: " + errorMessage);
                 }
             });
@@ -92,7 +91,6 @@ public class HomeActivity extends AppCompatActivity {
             Log.e("HomeActivity", "Current user is null.");
         }
 
-        // Set click listener for upload PDF button
         binding.uploadPdfButton.setOnClickListener(v -> navigateToUploadActivity());
     }
 
@@ -103,110 +101,84 @@ public class HomeActivity extends AppCompatActivity {
 
         // Sample announcements
         announcements.add("CSI DDU Recruitment Drive: Join the tech revolution! Apply by Oct 10, 2024.");
-        announcementUrls.add("https://www.instagram.com/csi_ddu/");
+        announcementUrls.add("http://example.com/exam");
 
         announcements.add("GDSC DDU Coding Challenge: Solve real-world problems on Nov 1, 2024.");
-        announcementUrls.add("https://www.instagram.com/gdscddu/");
+        announcementUrls.add("http://example.com/exam");
 
         announcements.add("IETE Tech Talk: Harness the power of innovation on Oct 20, 2024.");
-        announcementUrls.add("https://www.instagram.com/csi_ddu/");
+        announcementUrls.add("http://example.com/exam");
 
         announcements.add("Shutterbugs DDU Photo Walk: Capture moments of magic on Nov 5, 2024.");
-        announcementUrls.add("https://www.instagram.com/shutterbugs_ddu/");
+        announcementUrls.add("http://example.com/exam");
 
         announcements.add("Samvaad DDU Debate Session: Speak your mind, change the world on Oct 25, 2024.");
-        announcementUrls.add("https://www.instagram.com/samvaad_ddu/");
+        announcementUrls.add("http://example.com/exam");
 
         announcements.add("Malgadi-DDU Discount Week: Lowest prices guaranteed from Oct 15-20, 2024.");
-        announcementUrls.add("https://www.instagram.com/malgadi_ddu/");
+        announcementUrls.add("http://example.com/exam");
 
         announcements.add("Decrypters Coding Club Hackathon: Prove your coding mettle on Nov 10, 2024.");
-        announcementUrls.add("https://www.instagram.com/decrypters_ddu/");
+        announcementUrls.add("http://example.com/exam");
 
         announcements.add("Sports Club FOT DDU Annual Sports Meet: Let the games begin on Nov 1, 2024.");
-        announcementUrls.add("https://www.instagram.com/sportsclubddu/");
-
-
+        announcementUrls.add("http://example.com/exam");
     }
 
-    // Display announcements in HomeActivity
+    // Display announcements
     private void displayAnnouncements() {
-        LinearLayout announcementsContainer = binding.announcementsContainer;
+        announcementsContainer = binding.announcementsContainer;
 
-        // Create a new CardView for all announcements
-        CardView announcementCard = new CardView(this);
-        announcementCard.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        announcementCard.setCardBackgroundColor(getResources().getColor(R.color.card_background));
-        announcementCard.setCardElevation(6);
-
-        // Create a LinearLayout to hold the announcements
-        innerLayout = new LinearLayout(this);
-        innerLayout.setOrientation(LinearLayout.VERTICAL);
-        innerLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        // Loop through announcements
         for (int i = 0; i < announcements.size(); i++) {
             String announcementText = announcements.get(i);
             String url = announcementUrls.get(i);
 
-            // Create a TextView for the announcement
+            // Create a TextView for each announcement
             TextView announcementTextView = new TextView(this);
             announcementTextView.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
             announcementTextView.setText(announcementText);
             announcementTextView.setTextColor(getResources().getColor(R.color.text_primary));
-            announcementTextView.setTextSize(20); // Increased font size
+            announcementTextView.setTextSize(20);
             announcementTextView.setPadding(16, 16, 16, 16);
+            announcementTextView.setClickable(true);
 
-            // Add click listener to open URL
+            // Add click listener to open the URL
             announcementTextView.setOnClickListener(v -> {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
             });
 
-            // Add TextView to inner layout
-            innerLayout.addView(announcementTextView);
+            // Add the TextView to the announcements container
+            announcementsContainer.addView(announcementTextView);
 
-            // Add a divider after each announcement except the last one
+            // Add a separator between announcements
             if (i < announcements.size() - 1) {
-                View divider = new View(this);
-                divider.setLayoutParams(new LinearLayout.LayoutParams(
+                View separator = new View(this);
+                separator.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        1)); // Height of the divider
-                divider.setBackgroundColor(getResources().getColor(R.color.divider_color)); // Set divider color
-                innerLayout.addView(divider);
+                        2)); // Height of the separator
+                separator.setBackgroundColor(getResources().getColor(R.color.divider_color));
+                announcementsContainer.addView(separator);
             }
         }
 
-        // Add inner layout to CardView
-        announcementCard.addView(innerLayout);
-
-        // Add CardView to announcements container
-        announcementsContainer.addView(announcementCard);
-
-        // Start the bottom-to-top scrolling animation
+        // Start the scrolling animation
         startScrollingAnimation();
     }
 
-    // Animate announcements
+    // Start scrolling animation for announcements
     private void startScrollingAnimation() {
-        innerLayout.post(() -> {
-            int height = innerLayout.getHeight(); // The height of the announcements
-            // Create a TranslateAnimation that moves from bottom to top
-            TranslateAnimation animation = new TranslateAnimation(
-                    0, 0, height, -height);
-            animation.setDuration(15000); // Set the duration for the scroll (7 seconds)
-            animation.setRepeatCount(Animation.INFINITE); // Repeat indefinitely
-            animation.setRepeatMode(Animation.RESTART); // Restart from the beginning
-
-            // Start the animation
-            innerLayout.startAnimation(animation);
+        announcementsContainer.post(() -> {
+            announcementsContainer.clearAnimation();
+            int height = announcementsContainer.getHeight();
+            TranslateAnimation animation = new TranslateAnimation(0, 0, height, -height);
+            animation.setDuration(animationDuration);
+            animation.setRepeatCount(Animation.INFINITE);
+            animation.setRepeatMode(Animation.RESTART);
+            announcementsContainer.startAnimation(animation);
         });
     }
 
