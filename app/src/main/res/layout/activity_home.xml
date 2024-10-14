@@ -34,47 +34,50 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="100dp"
             android:background="@color/background">
 
-            <!-- Announcements Section -->
-            <androidx.cardview.widget.CardView
+            <!-- Fixed Announcement Section with Heading -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="100dp"
+                android:layout_height="350dp"
                 android:layout_gravity="center"
-                app:cardBackgroundColor="@color/colorAccent"
-                android:layout_marginBottom="16dp">
+                android:orientation="vertical"
+                android:background="@drawable/announcement_background"
+                android:padding="8dp"
+                android:elevation="6dp"
+                android:layout_margin="16dp">
 
+                <!-- Announcements Heading -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Announcements"
-                    android:textSize="24sp"
-                    android:paddingTop="100dp"
-                    android:textColor="@color/black"
-                    android:padding="16dp"
-                    android:gravity="center" />
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="@color/text_color1"
+                    android:padding="16dp" />
 
-                <!-- Announcement Container -->
-                <LinearLayout
-                    android:id="@+id/announcementsContainer"
+                <!-- Scrollable Announcements Section -->
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:layout_marginTop="16dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never">
 
                     <LinearLayout
-                        android:id="@+id/announcementsInnerContainer"
+                        android:id="@+id/announcementsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="16dp">
-                        <!-- Additional Announcements can be added here -->
+                        <!-- Announcement Items go here -->
                     </LinearLayout>
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                </ScrollView>
+            </LinearLayout>
 
             <!-- Button at the Bottom -->
             <Button
@@ -83,14 +86,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/custom_button"
+                android:background="@color/button_background"
                 android:padding="16dp"
                 android:text="Upload PDF"
                 android:textColor="@color/button_text_color"
                 android:textSize="18sp" />
-
         </RelativeLayout>
-
     </LinearLayout>
 
     <!-- Navigation Drawer -->
