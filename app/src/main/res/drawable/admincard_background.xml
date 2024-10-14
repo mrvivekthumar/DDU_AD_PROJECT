@@ -1,0 +1,11 @@
+<!-- res/drawable/card_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/background_dark" /> <!-- Updated background color -->
+    <corners android:radius="8dp" /> <!-- Rounded corners -->
+    <padding
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp" /> <!-- Padding inside the card -->
+    <stroke android:color="@color/blue" android:width="2dp" /> <!-- Purple border -->
+</shape>
