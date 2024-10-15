@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
     private ArrayList<String> announcementUrls;
     private LinearLayout announcementsContainer; // To reference the layout for scrolling animation
     private boolean isScrolling = false; // Flag to control scrolling
-    private int animationDuration = 20000; // Duration for the scrolling animation
+    private int animationDuration = 25000; // Duration for the scrolling animation
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
