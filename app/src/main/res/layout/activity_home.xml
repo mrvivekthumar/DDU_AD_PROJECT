@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="16dp"
-                android:background="@color/button_background"
+                android:background="@drawable/custom_button"
                 android:padding="16dp"
                 android:text="Upload PDF"
                 android:textColor="@color/button_text_color"
