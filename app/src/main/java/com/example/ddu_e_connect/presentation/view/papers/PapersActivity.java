@@ -411,6 +411,7 @@ public class PapersActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Handle custom back navigation
+        super.onBackPressed();
         navigateBack();
     }
 

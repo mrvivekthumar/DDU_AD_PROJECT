@@ -116,8 +116,108 @@ public class GoogleAuthRepository {
         UserProfile userProfile = createUserProfile(account);
 
         // Check if user exists in Firestore, create if not
-        checkAndCreateUser(userProfile, callback);
+        checkAndCreateUserWithRole(userProfile, callback);
     }
+
+    private void checkAndCreateUserWithRole(UserProfile userProfile, AuthCallback callback) {
+        Log.d(TAG, "Checking user in Firestore: " + userProfile.getUserId());
+
+        DocumentReference userDoc = db.collection(USERS_COLLECTION).document(userProfile.getUserId());
+
+        userDoc.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Existing user - get their current role
+                        String role = documentSnapshot.getString("role");
+                        userProfile.setRole(role != null ? role : DEFAULT_ROLE);
+                        Log.d(TAG, "Existing user found with role: " + userProfile.getRole());
+                        callback.onSuccess(userProfile);
+                    } else {
+                        // New user - assign role based on email
+                        Log.d(TAG, "New user, creating with role assignment");
+                        createUserDocumentWithRole(userProfile, callback);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to check user in Firestore", e);
+                    callback.onFailure("Failed to verify user: " + e.getMessage());
+                });
+    }
+
+    /**
+     * Create new user document with automatic role assignment
+     */
+    private void createUserDocumentWithRole(UserProfile userProfile, AuthCallback callback) {
+        // Use RoleManager to assign role based on email
+        RoleManager roleManager = new RoleManager(context);
+
+        roleManager.assignRoleBasedOnEmail(
+                userProfile.getEmail(),
+                userProfile.getUserId(),
+                new RoleManager.RoleCallback() {
+                    @Override
+                    public void onRoleAssigned(String role) {
+                        Log.d(TAG, "Role assigned: " + role);
+
+                        // Create user document with assigned role
+                        UserDocument userData = new UserDocument(
+                                userProfile.getName(),
+                                userProfile.getEmail(),
+                                userProfile.getPhotoUrl(),
+                                role,  // Use assigned role instead of default
+                                System.currentTimeMillis()
+                        );
+
+                        DocumentReference userDoc = db.collection(USERS_COLLECTION).document(userProfile.getUserId());
+                        userDoc.set(userData)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "User document created successfully with role: " + role);
+                                    userProfile.setRole(role);
+                                    callback.onSuccess(userProfile);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, "Failed to create user document", e);
+                                    callback.onFailure("Failed to create user profile: " + e.getMessage());
+                                });
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e(TAG, "Failed to assign role: " + errorMessage);
+                        // Fallback to default role
+                        createUserDocumentWithDefaultRole(userProfile, callback);
+                    }
+                }
+        );
+    }
+
+    /**
+     * Fallback method to create user with default role
+     */
+    private void createUserDocumentWithDefaultRole(UserProfile userProfile, AuthCallback callback) {
+        DocumentReference userDoc = db.collection(USERS_COLLECTION).document(userProfile.getUserId());
+
+        UserDocument userData = new UserDocument(
+                userProfile.getName(),
+                userProfile.getEmail(),
+                userProfile.getPhotoUrl(),
+                DEFAULT_ROLE,
+                System.currentTimeMillis()
+        );
+
+        userDoc.set(userData)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User document created with default role");
+                    userProfile.setRole(DEFAULT_ROLE);
+                    callback.onSuccess(userProfile);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to create user document", e);
+                    callback.onFailure("Failed to create user profile: " + e.getMessage());
+                });
+    }
+
+
 
     /**
      * Check if user exists in Firestore and create if necessary

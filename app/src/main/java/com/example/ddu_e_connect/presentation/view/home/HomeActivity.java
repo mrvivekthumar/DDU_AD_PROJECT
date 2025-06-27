@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
+import com.example.ddu_e_connect.data.source.remote.RoleManager;
 import com.example.ddu_e_connect.databinding.ActivityHomeBinding;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
 import com.example.ddu_e_connect.presentation.view.clubs.ClubsActivity;
@@ -392,7 +393,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      * Navigate to upload activity
      */
     private void navigateToUploadActivity() {
-        Intent intent = new Intent(HomeActivity.this, UploadActivity.class);
+        Intent intent = new Intent(HomeActivity.this,UploadActivity.class);
         startActivity(intent);
     }
 
@@ -462,6 +463,115 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Restart animation when activity is resumed
         if (announcementsContainer != null) {
             startScrollingAnimation();
+        }
+    }
+
+
+    // Add these methods to HomeActivity.java for testing roles
+
+    /**
+     * Test current user role
+     */
+    private void testCurrentUserRole() {
+        GoogleSignInAccount currentUser = authRepository.getCurrentUser();
+
+        if (currentUser == null) {
+            Log.e(TAG, "No user signed in");
+            return;
+        }
+
+        Log.d(TAG, "Testing role for user: " + currentUser.getEmail());
+
+        authRepository.fetchUserRole(currentUser.getId(), new GoogleAuthRepository.RoleCallback() {
+            @Override
+            public void onRoleFetched(String role) {
+                Log.d(TAG, "Current user role: " + role);
+
+                String message = "👤 User: " + currentUser.getDisplayName() + "\n" +
+                        "📧 Email: " + currentUser.getEmail() + "\n" +
+                        "🔐 Role: " + role.toUpperCase() + "\n" +
+                        "📤 Can Upload: " + (RoleManager.canUpload(role) ? "YES ✅" : "NO ❌");
+
+                showRoleDialog("Current User Role", message);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "Failed to fetch role: " + errorMessage);
+            }
+        });
+    }
+
+    /**
+     * Show role information dialog
+     */
+    private void showRoleDialog(String title, String message) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .setNeutralButton("Re-assign Role", (dialog, which) -> reassignCurrentUserRole())
+                .show();
+    }
+
+    /**
+     * Reassign current user role (forces role check)
+     */
+    private void reassignCurrentUserRole() {
+        GoogleSignInAccount currentUser = authRepository.getCurrentUser();
+
+        if (currentUser == null) {
+            Log.d(TAG, "No user signed in");
+            return;
+        }
+
+        RoleManager roleManager = new RoleManager(this);
+
+        roleManager.assignRoleBasedOnEmail(
+                currentUser.getEmail(),
+                currentUser.getId(),
+                new RoleManager.RoleCallback() {
+                    @Override
+                    public void onRoleAssigned(String role) {
+                        Log.d(TAG, "Role reassigned: " + role);
+
+                        // Test the role again
+                        testCurrentUserRole();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e(TAG, "Failed to reassign role: " + errorMessage);
+                    }
+                }
+        );
+    }
+
+    /**
+     * Show role setup instructions
+     */
+    private void showRoleSetupInstructions() {
+        String instructions = RoleManager.getRoleSetupInstructions();
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Role Assignment Setup")
+                .setMessage(instructions)
+                .setPositiveButton("OK", null)
+                .setNeutralButton("Test My Role", (dialog, which) -> testCurrentUserRole())
+                .show();
+    }
+
+    // Add this button click listener to test roles
+    private void addRoleTestButton() {
+        // You can add this to your existing layout or create a test button
+        // For testing, you can call testCurrentUserRole() from your upload button
+
+        if (binding.uploadPdfButton != null) {
+            binding.uploadPdfButton.setOnLongClickListener(v -> {
+                // Long press upload button to test role
+                testCurrentUserRole();
+                return true;
+            });
         }
     }
 }

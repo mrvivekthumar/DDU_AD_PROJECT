@@ -29,6 +29,8 @@ playServicesAuth = "21.2.0"
 firebaseStorage = "21.0.0"
 firebaseInappmessagingDisplay = "21.0.0"
 playServicesAuthVersion = "20.7.0"
+firebaseAppcheckPlayintegrity = "18.0.0"
+googleFirebaseStorageVersion = "21.0.2"
 
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
@@ -64,6 +66,8 @@ play-services-auth = { module = "com.google.android.gms:play-services-auth", ver
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 firebase-inappmessaging-display = { group = "com.google.firebase", name = "firebase-inappmessaging-display", version.ref = "firebaseInappmessagingDisplay" }
 play-services-auth-v2070 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
+firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity", version.ref = "firebaseAppcheckPlayintegrity" }
+google-firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "googleFirebaseStorageVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -4,32 +4,72 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
+import com.example.ddu_e_connect.data.source.remote.GoogleDriveRepository;
 import com.example.ddu_e_connect.databinding.ActivityUploadBinding;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
+import com.example.ddu_e_connect.presentation.view.home.HomeActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UploadActivity extends AppCompatActivity {
     private static final String TAG = "UploadActivity";
-    private static final String STORAGE_PATH = "uploads/";
 
+    // UI Components
     private ActivityUploadBinding binding;
+    private Spinner categorySpinner;
+    private Spinner folderSpinner;
+    private EditText pdfNameEditText;
+    private EditText newFolderEditText;
+    private Button selectPdfButton;
+    private Button uploadPdfButton;
+    private Button createFolderButton;
+    private ProgressBar uploadProgressBar;
+    private TextView uploadStatusText;
+
+    // Data and Services
     private GoogleAuthRepository authRepository;
+    private GoogleDriveRepository driveRepository;
     private GoogleSignInAccount currentUser;
-    private Uri selectedPdfUri;
     private ActivityResultLauncher<Intent> pdfPickerLauncher;
-    private FirebaseStorage storage;
+
+    // Upload Data
+    private Uri selectedPdfUri;
+    private String selectedCategory = "academic";
+    private String selectedFolderId = null;
+    private String selectedFolderName = "";
+    private List<GoogleDriveRepository.DriveFolder> availableFolders = new ArrayList<>();
+
+    // Categories for PDF organization
+    private final String[] categories = {
+            "Academic Papers", "Study Materials", "Exam Papers", "Club Documents"
+    };
+    private final String[] categoryKeys = {
+            "academic", "study", "exam", "club"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,18 +81,131 @@ public class UploadActivity extends AppCompatActivity {
         setupUI();
         checkUserPermissions();
 
-        Log.d(TAG, "UploadActivity initialized");
+        Log.d(TAG, "Enhanced UploadActivity initialized");
     }
 
     /**
-     * Initialize components
+     * Initialize components and services
      */
     private void initializeComponents() {
+        // Initialize repositories
         authRepository = new GoogleAuthRepository(this);
+        driveRepository = new GoogleDriveRepository(this);
         currentUser = authRepository.getCurrentUser();
-        storage = FirebaseStorage.getInstance();
 
+        // Initialize UI components
+        initializeUIComponents();
+
+        // Setup PDF picker launcher
         setupPdfPickerLauncher();
+    }
+
+    /**
+     * Initialize UI components
+     */
+    private void initializeUIComponents() {
+        // Find UI components
+        pdfNameEditText = binding.pdfNameEditText;
+        selectPdfButton = binding.selectPdfButton;
+        uploadPdfButton = binding.uploadPdfButton;
+
+        // Create additional UI components programmatically
+        setupCategorySpinner();
+        setupFolderSpinner();
+        setupProgressComponents();
+        setupNewFolderComponents();
+    }
+
+    /**
+     * Setup category spinner
+     */
+    private void setupCategorySpinner() {
+        // Add category spinner above PDF name field
+        categorySpinner = new Spinner(this);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, categories);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(categoryAdapter);
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedCategory = categoryKeys[position];
+                loadFoldersForCategory();
+                Log.d(TAG, "Category selected: " + selectedCategory);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // Add to layout (you'll need to update your XML)
+    }
+
+    /**
+     * Setup folder spinner
+     */
+    private void setupFolderSpinner() {
+        folderSpinner = new Spinner(this);
+        updateFolderSpinner();
+
+        folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    // "Select Folder" option
+                    selectedFolderId = null;
+                    selectedFolderName = "";
+                } else if (position == availableFolders.size() + 1) {
+                    // "Create New Folder" option
+                    showCreateFolderDialog();
+                } else {
+                    // Existing folder selected
+                    GoogleDriveRepository.DriveFolder selectedFolder = availableFolders.get(position - 1);
+                    selectedFolderId = selectedFolder.getId();
+                    selectedFolderName = selectedFolder.getName();
+                    Log.d(TAG, "Folder selected: " + selectedFolderName);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    /**
+     * Setup progress components
+     */
+    private void setupProgressComponents() {
+        uploadProgressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        uploadProgressBar.setVisibility(View.GONE);
+        uploadProgressBar.setMax(100);
+
+        uploadStatusText = new TextView(this);
+        uploadStatusText.setVisibility(View.GONE);
+        uploadStatusText.setTextColor(getResources().getColor(R.color.text_color2));
+    }
+
+    /**
+     * Setup new folder components
+     */
+    private void setupNewFolderComponents() {
+        newFolderEditText = new EditText(this);
+        newFolderEditText.setHint("Enter new folder name");
+        newFolderEditText.setVisibility(View.GONE);
+
+        createFolderButton = new Button(this);
+        createFolderButton.setText("Create Folder");
+        createFolderButton.setVisibility(View.GONE);
+
+        createFolderButton.setOnClickListener(v -> {
+            String folderName = newFolderEditText.getText().toString().trim();
+            if (!folderName.isEmpty()) {
+                createFolder(folderName);
+            } else {
+                showError("Please enter a folder name");
+            }
+        });
     }
 
     /**
@@ -71,23 +224,20 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     /**
-     * Setup UI components
+     * Setup UI event listeners
      */
     private void setupUI() {
-        setupClickListeners();
-        updateUploadButtonState();
-        displayUserInfo();
-    }
-
-    /**
-     * Setup click listeners
-     */
-    private void setupClickListeners() {
         // Select PDF button
-        binding.selectPdfButton.setOnClickListener(v -> selectPdfFile());
+        selectPdfButton.setOnClickListener(v -> selectPdfFile());
 
         // Upload PDF button
-        binding.uploadPdfButton.setOnClickListener(v -> validateAndUploadPdf());
+        uploadPdfButton.setOnClickListener(v -> validateAndUploadPdf());
+
+        // Initially disable upload button
+        updateUploadButtonState();
+
+        // Load initial folders
+        loadFoldersForCategory();
     }
 
     /**
@@ -107,7 +257,7 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onRoleFetched(String role) {
                 Log.d(TAG, "User role: " + role);
-                checkRolePermissions(role);
+                handleRolePermissions(role);
             }
 
             @Override
@@ -120,59 +270,187 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     /**
-     * Check if user role allows uploads
+     * Handle role-based permissions
      */
-    private void checkRolePermissions(String role) {
+    private void handleRolePermissions(String role) {
         boolean canUpload = "admin".equalsIgnoreCase(role) || "helper".equalsIgnoreCase(role);
 
         if (!canUpload) {
             Log.w(TAG, "User does not have upload permissions. Role: " + role);
-            showError("You don't have permission to upload files. Contact admin for access.");
+            showUnauthorizedDialog(role);
             disableUploadFeatures();
         } else {
             Log.d(TAG, "User has upload permissions");
-            enableUploadFeatures();
+            enableUploadFeatures(role);
         }
     }
 
     /**
-     * Enable upload features
+     * Show unauthorized access dialog
      */
-    private void enableUploadFeatures() {
-        binding.selectPdfButton.setEnabled(true);
-        binding.pdfNameEditText.setEnabled(true);
-        binding.folderNameEditText.setEnabled(true);
-
-        // Show welcome message for authorized users
-        Toast.makeText(this, "You can upload PDFs to share with students", Toast.LENGTH_LONG).show();
+    private void showUnauthorizedDialog(String userRole) {
+        new AlertDialog.Builder(this)
+                .setTitle("Upload Permission Required")
+                .setMessage("You don't have permission to upload files.\n\n" +
+                        "Your current role: " + userRole.toUpperCase() + "\n" +
+                        "Required roles: ADMIN or HELPER\n\n" +
+                        "Please contact an administrator to get upload permissions.")
+                .setPositiveButton("Contact Admin", (dialog, which) -> {
+                    // Navigate to contact activity
+                    startActivity(new Intent(this,
+                            com.example.ddu_e_connect.presentation.view.contact.ContactUsActivity.class));
+                })
+                .setNegativeButton("Go Back", (dialog, which) -> {
+                    navigateToHome();
+                })
+                .setCancelable(false)
+                .show();
     }
 
     /**
-     * Disable upload features
+     * Enable upload features for authorized users
+     */
+    private void enableUploadFeatures(String role) {
+        selectPdfButton.setEnabled(true);
+        pdfNameEditText.setEnabled(true);
+
+        // Show welcome message
+        showSuccess("Welcome " + role.toUpperCase() + "! You can upload PDFs to help students.");
+
+        // Request Drive permission
+        driveRepository.requestDrivePermission(new GoogleDriveRepository.AuthCallback() {
+            @Override
+            public void onAuthSuccess() {
+                Log.d(TAG, "Drive permission granted");
+                loadFoldersForCategory();
+            }
+
+            @Override
+            public void onAuthFailure(String errorMessage) {
+                Log.e(TAG, "Drive permission failed: " + errorMessage);
+                showError("Google Drive permission required for uploads");
+            }
+        });
+    }
+
+    /**
+     * Disable upload features for unauthorized users
      */
     private void disableUploadFeatures() {
-        binding.selectPdfButton.setEnabled(false);
-        binding.uploadPdfButton.setEnabled(false);
-        binding.pdfNameEditText.setEnabled(false);
-        binding.folderNameEditText.setEnabled(false);
+        selectPdfButton.setEnabled(false);
+        uploadPdfButton.setEnabled(false);
+        pdfNameEditText.setEnabled(false);
 
-        // Change button text to indicate no permission
-        binding.selectPdfButton.setText("Upload Not Allowed");
-        binding.uploadPdfButton.setText("Permission Required");
+        selectPdfButton.setText("Upload Not Allowed");
+        uploadPdfButton.setText("Permission Required");
     }
 
     /**
-     * Display current user information
+     * Load folders for selected category
      */
-    private void displayUserInfo() {
-        if (currentUser != null) {
-            Log.d(TAG, "Displaying info for user: " + currentUser.getDisplayName());
+    private void loadFoldersForCategory() {
+        Log.d(TAG, "Loading folders for category: " + selectedCategory);
 
-            // If you have user info TextViews in your layout, update them here
-            // Example:
-            // binding.userNameText.setText(currentUser.getDisplayName());
-            // binding.userEmailText.setText(currentUser.getEmail());
+        driveRepository.getFoldersInCategory(selectedCategory, new GoogleDriveRepository.FolderCallback() {
+            @Override
+            public void onFoldersLoaded(List<GoogleDriveRepository.DriveFolder> folders) {
+                Log.d(TAG, "Loaded " + folders.size() + " folders");
+                availableFolders.clear();
+                availableFolders.addAll(folders);
+                updateFolderSpinner();
+            }
+
+            @Override
+            public void onFolderCreated(String folderId, String folderName) {
+                // Reload folders after creation
+                loadFoldersForCategory();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e(TAG, "Failed to load folders: " + errorMessage);
+                showError("Failed to load folders: " + errorMessage);
+            }
+        });
+    }
+
+    /**
+     * Update folder spinner with available folders
+     */
+    private void updateFolderSpinner() {
+        List<String> folderNames = new ArrayList<>();
+        folderNames.add("Select Folder (Optional)");
+
+        for (GoogleDriveRepository.DriveFolder folder : availableFolders) {
+            folderNames.add(folder.getName());
         }
+
+        folderNames.add("+ Create New Folder");
+
+        ArrayAdapter<String> folderAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, folderNames);
+        folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        folderSpinner.setAdapter(folderAdapter);
+    }
+
+    /**
+     * Show create folder dialog
+     */
+    private void showCreateFolderDialog() {
+        EditText folderNameInput = new EditText(this);
+        folderNameInput.setHint("Enter folder name");
+
+        new AlertDialog.Builder(this)
+                .setTitle("Create New Folder")
+                .setMessage("Create a new folder in " + categories[getSelectedCategoryIndex()])
+                .setView(folderNameInput)
+                .setPositiveButton("Create", (dialog, which) -> {
+                    String folderName = folderNameInput.getText().toString().trim();
+                    if (!folderName.isEmpty()) {
+                        createFolder(folderName);
+                    } else {
+                        showError("Please enter a folder name");
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    // Reset spinner selection
+                    folderSpinner.setSelection(0);
+                })
+                .show();
+    }
+
+    /**
+     * Create new folder
+     */
+    private void createFolder(String folderName) {
+        Log.d(TAG, "Creating folder: " + folderName + " in category: " + selectedCategory);
+
+        driveRepository.createFolder(folderName, selectedCategory, new GoogleDriveRepository.FolderCallback() {
+            @Override
+            public void onFoldersLoaded(List<GoogleDriveRepository.DriveFolder> folders) {
+                // Not used
+            }
+
+            @Override
+            public void onFolderCreated(String folderId, String folderName) {
+                Log.d(TAG, "Folder created successfully: " + folderName);
+                showSuccess("Folder '" + folderName + "' created successfully!");
+
+                // Set as selected folder
+                selectedFolderId = folderId;
+                selectedFolderName = folderName;
+
+                // Reload folders
+                loadFoldersForCategory();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e(TAG, "Failed to create folder: " + errorMessage);
+                showError("Failed to create folder: " + errorMessage);
+                folderSpinner.setSelection(0);
+            }
+        });
     }
 
     /**
@@ -217,14 +495,10 @@ public class UploadActivity extends AppCompatActivity {
      * Handle successful PDF selection
      */
     private void onPdfSelected() {
-        // Update UI to show file selected
-        binding.selectPdfButton.setText("PDF Selected ✓");
-        binding.selectPdfButton.setEnabled(true);
+        selectPdfButton.setText("PDF Selected ✓");
+        selectPdfButton.setBackgroundColor(getResources().getColor(R.color.button_background));
 
-        // Enable upload button
         updateUploadButtonState();
-
-        // Show success message
         showSuccess("PDF file selected successfully!");
 
         Log.d(TAG, "PDF selection completed successfully");
@@ -234,10 +508,10 @@ public class UploadActivity extends AppCompatActivity {
      * Validate inputs and upload PDF
      */
     private void validateAndUploadPdf() {
-        String pdfName = binding.pdfNameEditText.getText().toString().trim();
-        String folderName = binding.folderNameEditText.getText().toString().trim();
+        String pdfName = pdfNameEditText.getText().toString().trim();
 
-        Log.d(TAG, "Validating upload inputs - PDF name: " + pdfName + ", Folder: " + folderName);
+        Log.d(TAG, "Validating upload inputs - PDF name: " + pdfName +
+                ", Category: " + selectedCategory + ", Folder: " + selectedFolderName);
 
         // Validate inputs
         if (selectedPdfUri == null) {
@@ -247,105 +521,115 @@ public class UploadActivity extends AppCompatActivity {
 
         if (pdfName.isEmpty()) {
             showError("Please enter a name for the PDF");
-            binding.pdfNameEditText.requestFocus();
+            pdfNameEditText.requestFocus();
             return;
         }
 
-        // Validate PDF name (no special characters)
+        // Validate PDF name
         if (!isValidFileName(pdfName)) {
             showError("PDF name can only contain letters, numbers, spaces, hyphens, and underscores");
-            binding.pdfNameEditText.requestFocus();
+            pdfNameEditText.requestFocus();
             return;
         }
 
-        // Validate folder name if provided
-        if (!folderName.isEmpty() && !isValidFileName(folderName)) {
-            showError("Folder name can only contain letters, numbers, spaces, hyphens, and underscores");
-            binding.folderNameEditText.requestFocus();
-            return;
+        // Add .pdf extension if not present
+        if (!pdfName.toLowerCase().endsWith(".pdf")) {
+            pdfName += ".pdf";
         }
 
         // Start upload
-        startPdfUpload(pdfName, folderName);
-    }
-
-    /**
-     * Validate file name for Firebase Storage
-     */
-    private boolean isValidFileName(String fileName) {
-        return fileName.matches("^[a-zA-Z0-9\\s\\-_]+$");
+        startPdfUpload(pdfName);
     }
 
     /**
      * Start PDF upload process
      */
-    private void startPdfUpload(String pdfName, String folderName) {
+    private void startPdfUpload(String pdfName) {
         Log.d(TAG, "Starting PDF upload process");
 
-        // Set loading state
         setUploadingState(true);
 
-        // Create storage path
-        String uploadPath = createUploadPath(pdfName, folderName);
-        StorageReference storageRef = storage.getReference(uploadPath);
+        try {
+            // Convert URI to File
+            File pdfFile = createFileFromUri(selectedPdfUri, pdfName);
 
-        Log.d(TAG, "Uploading to path: " + uploadPath);
+            if (pdfFile == null) {
+                onUploadFailure("Failed to prepare file for upload");
+                return;
+            }
 
-        // Start upload
-        UploadTask uploadTask = storageRef.putFile(selectedPdfUri);
+            // Upload using Google Drive API
+            driveRepository.uploadPDF(pdfFile, pdfName, selectedFolderName, selectedCategory,
+                    new GoogleDriveRepository.UploadCallback() {
+                        @Override
+                        public void onSuccess(String fileId, String fileName) {
+                            Log.d(TAG, "PDF upload successful: " + fileId);
+                            runOnUiThread(() -> onUploadSuccess(fileName));
+                        }
 
-        uploadTask
-                .addOnProgressListener(taskSnapshot -> {
-                    // Update progress
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    updateUploadProgress((int) progress);
-                })
-                .addOnSuccessListener(taskSnapshot -> {
-                    Log.d(TAG, "PDF upload successful");
-                    onUploadSuccess(pdfName, folderName);
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "PDF upload failed", e);
-                    onUploadFailure(e.getMessage());
-                });
-    }
+                        @Override
+                        public void onProgress(int progress) {
+                            runOnUiThread(() -> updateUploadProgress(progress));
+                        }
 
-    /**
-     * Create upload path for Firebase Storage
-     */
-    private String createUploadPath(String pdfName, String folderName) {
-        String fileName = pdfName + ".pdf";
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            Log.e(TAG, "PDF upload failed: " + errorMessage);
+                            runOnUiThread(() -> onUploadFailure(errorMessage));
+                        }
+                    });
 
-        if (folderName != null && !folderName.trim().isEmpty()) {
-            return STORAGE_PATH + folderName.trim() + "/" + fileName;
-        } else {
-            return STORAGE_PATH + fileName;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to start upload", e);
+            onUploadFailure("Failed to start upload: " + e.getMessage());
         }
     }
 
     /**
-     * Update upload progress
+     * Create File from URI
      */
-    private void updateUploadProgress(int progress) {
-        runOnUiThread(() -> {
-            binding.uploadPdfButton.setText("Uploading... " + progress + "%");
-        });
+    private File createFileFromUri(Uri uri, String fileName) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            if (inputStream == null) return null;
+
+            File tempFile = new File(getCacheDir(), fileName);
+            FileOutputStream outputStream = new FileOutputStream(tempFile);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.close();
+            inputStream.close();
+
+            return tempFile;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to create file from URI", e);
+            return null;
+        }
     }
 
     /**
      * Handle successful upload
      */
-    private void onUploadSuccess(String pdfName, String folderName) {
+    private void onUploadSuccess(String fileName) {
         setUploadingState(false);
-        showSuccess("PDF uploaded successfully!");
+        showSuccess("PDF uploaded successfully! 🎉");
 
-        Log.d(TAG, "Upload completed successfully");
+        Log.d(TAG, "Upload completed successfully: " + fileName);
 
-        // Reset form
-        resetUploadForm();
-
-        // Navigate back to home after short delay
-        new android.os.Handler().postDelayed(() -> navigateToHome(), 2000);
+        // Show success dialog with options
+        new AlertDialog.Builder(this)
+                .setTitle("Upload Successful!")
+                .setMessage("PDF '" + fileName + "' has been uploaded successfully.\n\n" +
+                        "Students can now access this file in the " +
+                        categories[getSelectedCategoryIndex()] + " section.")
+                .setPositiveButton("Upload Another", (dialog, which) -> resetUploadForm())
+                .setNegativeButton("Go to Home", (dialog, which) -> navigateToHome())
+                .show();
     }
 
     /**
@@ -354,21 +638,43 @@ public class UploadActivity extends AppCompatActivity {
     private void onUploadFailure(String errorMessage) {
         setUploadingState(false);
         showError("Upload failed: " + errorMessage);
-
         Log.e(TAG, "Upload failed: " + errorMessage);
+    }
+
+    /**
+     * Update upload progress
+     */
+    private void updateUploadProgress(int progress) {
+        if (uploadProgressBar != null) {
+            uploadProgressBar.setProgress(progress);
+        }
+        if (uploadStatusText != null) {
+            uploadStatusText.setText("Uploading... " + progress + "%");
+        }
     }
 
     /**
      * Set uploading state for UI
      */
     private void setUploadingState(boolean isUploading) {
-        binding.selectPdfButton.setEnabled(!isUploading);
-        binding.uploadPdfButton.setEnabled(!isUploading);
-        binding.pdfNameEditText.setEnabled(!isUploading);
-        binding.folderNameEditText.setEnabled(!isUploading);
+        selectPdfButton.setEnabled(!isUploading);
+        uploadPdfButton.setEnabled(!isUploading);
+        pdfNameEditText.setEnabled(!isUploading);
+        categorySpinner.setEnabled(!isUploading);
+        folderSpinner.setEnabled(!isUploading);
+
+        if (uploadProgressBar != null) {
+            uploadProgressBar.setVisibility(isUploading ? View.VISIBLE : View.GONE);
+        }
+        if (uploadStatusText != null) {
+            uploadStatusText.setVisibility(isUploading ? View.VISIBLE : View.GONE);
+        }
 
         if (!isUploading) {
-            binding.uploadPdfButton.setText("Upload PDF");
+            uploadPdfButton.setText("Upload PDF");
+            if (uploadStatusText != null) {
+                uploadStatusText.setText("");
+            }
         }
     }
 
@@ -377,8 +683,8 @@ public class UploadActivity extends AppCompatActivity {
      */
     private void updateUploadButtonState() {
         boolean canUpload = selectedPdfUri != null &&
-                !binding.pdfNameEditText.getText().toString().trim().isEmpty();
-        binding.uploadPdfButton.setEnabled(canUpload);
+                !pdfNameEditText.getText().toString().trim().isEmpty();
+        uploadPdfButton.setEnabled(canUpload);
     }
 
     /**
@@ -386,46 +692,48 @@ public class UploadActivity extends AppCompatActivity {
      */
     private void resetUploadForm() {
         selectedPdfUri = null;
-        binding.pdfNameEditText.setText("");
-        binding.folderNameEditText.setText("");
-        binding.selectPdfButton.setText("Select PDF");
-        binding.uploadPdfButton.setText("Upload PDF");
-        binding.uploadPdfButton.setEnabled(false);
+        pdfNameEditText.setText("");
+        selectPdfButton.setText("Select PDF");
+        selectPdfButton.setBackgroundColor(getResources().getColor(R.color.EditText_background));
+        uploadPdfButton.setText("Upload PDF");
+        uploadPdfButton.setEnabled(false);
+        categorySpinner.setSelection(0);
+        folderSpinner.setSelection(0);
+        selectedFolderId = null;
+        selectedFolderName = "";
     }
 
-    /**
-     * Navigate to home activity
-     */
+    // Helper methods
+
+    private boolean isValidFileName(String fileName) {
+        return fileName.matches("^[a-zA-Z0-9\\s\\-_]+$");
+    }
+
+    private int getSelectedCategoryIndex() {
+        for (int i = 0; i < categoryKeys.length; i++) {
+            if (categoryKeys[i].equals(selectedCategory)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    // Navigation methods
+
     private void navigateToHome() {
-        Log.d(TAG, "Navigating to HomeActivity");
-
-        try {
-            Intent intent = new Intent(UploadActivity.this,
-                    com.example.ddu_e_connect.presentation.view.home.HomeActivity.class);
-            startActivity(intent);
-            finish();
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to navigate to HomeActivity", e);
-        }
+        Intent intent = new Intent(UploadActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 
-    /**
-     * Navigate to sign in activity
-     */
     private void navigateToSignIn() {
-        Log.d(TAG, "Navigating to SignInActivity");
-
-        try {
-            Intent intent = new Intent(UploadActivity.this, SignInActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to navigate to SignInActivity", e);
-        }
+        Intent intent = new Intent(UploadActivity.this, SignInActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
-    // Utility methods for user feedback
+    // User feedback methods
 
     private void showSuccess(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -439,13 +747,12 @@ public class UploadActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    // Activity lifecycle
+
     @Override
     protected void onStart() {
         super.onStart();
-
-        // Check authentication when activity starts
         if (!authRepository.isUserSignedIn()) {
-            Log.w(TAG, "User not signed in");
             navigateToSignIn();
         }
     }
@@ -454,12 +761,11 @@ public class UploadActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
-        Log.d(TAG, "UploadActivity destroyed");
+        Log.d(TAG, "Enhanced UploadActivity destroyed");
     }
 
     @Override
     public void onBackPressed() {
-        // Navigate back to home
         super.onBackPressed();
         navigateToHome();
     }

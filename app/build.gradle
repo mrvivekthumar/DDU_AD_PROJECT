@@ -36,6 +36,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    // Important: Add packaging options for Google Drive API
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -44,6 +49,9 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.firebase.appcheck
+    implementation libs.firebase.appcheck.playintegrity
+    implementation libs.google.firebase.storage
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
@@ -53,7 +61,7 @@ dependencies {
     // Firebase BOM - manages all Firebase library versions
     implementation platform('com.google.firebase:firebase-bom:33.15.0')
 
-    // Google Sign-In (NEW - Main dependency for Google Authentication)
+    // Google Sign-In (Keep this for authentication)
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
     // Firebase Firestore (Keep this for user data storage)
@@ -62,17 +70,14 @@ dependencies {
     // Firebase Analytics (Optional but recommended)
     implementation 'com.google.firebase:firebase-analytics'
 
-    // Keep Firebase Storage for PDF uploads
-    implementation 'com.google.firebase:firebase-storage'
+    // **NEW: Google Drive API dependencies (Updated versions for 2024)**
+    implementation 'com.google.apis:google-api-services-drive:v3-rev20240809-2.0.0'
+    implementation 'com.google.api-client:google-api-client:2.2.0'
+    implementation 'com.google.api-client:google-api-client-gson:2.2.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.44.1'
 
-    // Keep Firebase App Check for security
-    // Firebase App Check for security (Updated dependency)
-    implementation 'com.google.firebase:firebase-appcheck'
-    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
-
-    implementation("androidx.credentials:credentials:1.2.2") // Use the latest version
-    // For Sign in with Google support with Credential Manager
-    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    // **IMPORTANT: Add this for GoogleAccountCredential**
+    implementation 'com.google.api-client:google-api-client-android:1.32.1'
 
     // For the card layout
     implementation libs.cardview
