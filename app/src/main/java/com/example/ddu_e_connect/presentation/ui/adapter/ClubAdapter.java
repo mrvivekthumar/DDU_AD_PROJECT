@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ddu_e_connect.R;
-import com.example.ddu_e_connect.data.model.ClubsModel;
+import com.example.ddu_e_connect.domain.model.ClubsModel;
 
 import java.util.ArrayList;
 

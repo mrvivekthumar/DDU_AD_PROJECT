@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.presentation.ui.adapter.PdfAdapter;
-import com.example.ddu_e_connect.data.model.PdfModel;
+import com.example.ddu_e_connect.domain.model.PdfModel;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;

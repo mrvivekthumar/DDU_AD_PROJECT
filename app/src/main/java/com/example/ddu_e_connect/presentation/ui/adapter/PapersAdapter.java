@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.ddu_e_connect.R;
-import com.example.ddu_e_connect.data.model.FolderModel;
+import com.example.ddu_e_connect.domain.model.FolderModel;
 
 import java.util.List;
 

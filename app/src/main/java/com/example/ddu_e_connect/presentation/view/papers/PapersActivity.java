@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.presentation.ui.adapter.PapersAdapter;
 import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
-import com.example.ddu_e_connect.data.model.FolderModel;
+import com.example.ddu_e_connect.domain.model.FolderModel;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.storage.FirebaseStorage;
