@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ddu_e_connect.R;
-import com.example.ddu_e_connect.model.ClubsModel;
-import com.example.ddu_e_connect.adapters.ClubAdapter;
+import com.example.ddu_e_connect.data.model.ClubsModel;
+import com.example.ddu_e_connect.presentation.ui.adapter.ClubAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;

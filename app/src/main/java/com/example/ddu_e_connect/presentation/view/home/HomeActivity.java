@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ddu_e_connect.R;
-import com.example.ddu_e_connect.data.repository.GoogleAuthRepository;
+import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
 import com.example.ddu_e_connect.databinding.ActivityHomeBinding;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
 import com.example.ddu_e_connect.presentation.view.clubs.ClubsActivity;

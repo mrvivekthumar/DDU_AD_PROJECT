@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -13,7 +12,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.ddu_e_connect.data.repository.GoogleAuthRepository;
+import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
 import com.example.ddu_e_connect.databinding.ActivityUploadBinding;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

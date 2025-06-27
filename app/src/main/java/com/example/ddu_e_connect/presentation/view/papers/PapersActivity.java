@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,9 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ddu_e_connect.R;
-import com.example.ddu_e_connect.adapters.PapersAdapter;
-import com.example.ddu_e_connect.data.repository.GoogleAuthRepository;
-import com.example.ddu_e_connect.model.FolderModel;
+import com.example.ddu_e_connect.presentation.ui.adapter.PapersAdapter;
+import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
+import com.example.ddu_e_connect.data.model.FolderModel;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.storage.FirebaseStorage;

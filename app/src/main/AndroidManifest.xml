@@ -28,7 +28,7 @@
             android:name=".presentation.view.clubs.ClubsActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.view.home.LogoutActivity"
+            android:name=".presentation.view.auth.LogoutActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.view.papers.PdfListActivity"
@@ -52,7 +52,7 @@
             android:name=".presentation.view.auth.SignInActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.ui.main.MainActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>

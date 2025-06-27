@@ -1,9 +1,8 @@
-package com.example.ddu_e_connect.presentation.view.home;
+package com.example.ddu_e_connect.presentation.view.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -12,10 +11,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.ddu_e_connect.R;
-import com.example.ddu_e_connect.data.repository.GoogleAuthRepository;
+import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
 import com.example.ddu_e_connect.databinding.ActivityLogoutBinding;
-import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 public class LogoutActivity extends AppCompatActivity {

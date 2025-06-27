@@ -1,4 +1,4 @@
-package com.example.ddu_e_connect;
+package com.example.ddu_e_connect.presentation.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.ddu_e_connect.data.repository.GoogleAuthRepository;
+import com.example.ddu_e_connect.R;
+import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
 import com.example.ddu_e_connect.presentation.view.home.HomeActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

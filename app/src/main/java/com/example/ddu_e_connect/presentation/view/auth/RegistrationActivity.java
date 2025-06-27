@@ -7,7 +7,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.ddu_e_connect.data.repository.GoogleAuthRepository;
+import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
 import com.example.ddu_e_connect.databinding.ActivityRegistrationBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 

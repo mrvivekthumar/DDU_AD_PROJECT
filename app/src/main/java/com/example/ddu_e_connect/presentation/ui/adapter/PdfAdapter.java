@@ -1,4 +1,4 @@
-package com.example.ddu_e_connect.adapters;
+package com.example.ddu_e_connect.presentation.ui.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ddu_e_connect.R;
-import com.example.ddu_e_connect.model.PdfModel;
+import com.example.ddu_e_connect.data.model.PdfModel;
 
 import java.util.List;
 

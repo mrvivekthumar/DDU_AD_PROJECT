@@ -1,4 +1,4 @@
-package com.example.ddu_e_connect.model;
+package com.example.ddu_e_connect.data.model;
 
 public class FolderModel {
     private String name;

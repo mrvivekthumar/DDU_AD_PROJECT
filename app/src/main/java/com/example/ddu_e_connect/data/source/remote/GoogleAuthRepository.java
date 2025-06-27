@@ -1,11 +1,9 @@
-package com.example.ddu_e_connect.data.repository;
+package com.example.ddu_e_connect.data.source.remote;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

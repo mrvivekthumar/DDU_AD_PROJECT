@@ -1,4 +1,4 @@
-package com.example.ddu_e_connect.adapters;
+package com.example.ddu_e_connect.presentation.ui.adapter;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ddu_e_connect.R;
-import com.example.ddu_e_connect.model.ClubsModel;
+import com.example.ddu_e_connect.data.model.ClubsModel;
 
 import java.util.ArrayList;
 
