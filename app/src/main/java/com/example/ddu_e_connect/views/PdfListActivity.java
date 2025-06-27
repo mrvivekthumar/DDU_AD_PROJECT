@@ -39,16 +39,25 @@ public class PdfListActivity extends AppCompatActivity {
     }
 
     private void loadPdfFiles() {
-        // Load your PDF files from Firebase
-        StorageReference pdfRef = storage.getReference().child("path_to_your_pdfs"); // Update this path
+        // Load PDF files from Firebase Storage
+        StorageReference pdfRef = storage.getReference().child("uploads/"); // Use correct path
         pdfRef.listAll().addOnSuccessListener(listResult -> {
             pdfList.clear();
+
+            // Process each PDF file
             for (StorageReference item : listResult.getItems()) {
                 String pdfName = item.getName();
-                String pdfUrl = item.getDownloadUrl().toString();
-                pdfList.add(new PdfModel(pdfName, pdfUrl));  // Assuming you have a proper PdfModel constructor
+
+                // Get download URL asynchronously (FIXED!)
+                item.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String pdfUrl = uri.toString();
+                    pdfList.add(new PdfModel(pdfName, pdfUrl));
+                    pdfAdapter.notifyDataSetChanged();
+                }).addOnFailureListener(e -> {
+                    Log.e("PdfListActivity", "Failed to get download URL for: " + pdfName, e);
+                });
             }
-            pdfAdapter.notifyDataSetChanged();
+
         }).addOnFailureListener(e -> {
             Log.e("PdfListActivity", "Failed to load PDFs.", e);
             Toast.makeText(this, "Failed to load PDFs.", Toast.LENGTH_SHORT).show();

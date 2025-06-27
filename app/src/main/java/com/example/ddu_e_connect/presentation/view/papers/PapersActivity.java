@@ -306,7 +306,7 @@ public class PapersActivity extends AppCompatActivity {
             loadFoldersAndFiles(currentPath);
         } else {
             // At root level, exit activity
-            finish();
+            super.onBackPressed();
         }
     }
 
@@ -412,7 +412,6 @@ public class PapersActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Handle custom back navigation
-        super.onBackPressed();
         navigateBack();
     }
 

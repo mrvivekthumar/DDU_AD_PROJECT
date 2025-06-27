@@ -178,18 +178,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.papers) {
-            navigateToPapersActivity();
-        } else if (id == R.id.clubs) {
-            navigateToClubsActivity();
-        } else if (id == R.id.logout) {
-            handleLogout();
-        } else if (id == R.id.contact) {
-            navigateToContactActivity();
-        }
-
-        // Close the drawer after item is clicked
+        // Close drawer first to prevent UI lag
         binding.drawlayout.closeDrawer(binding.navigationview);
+
+        // Add slight delay to allow drawer to close smoothly
+        new android.os.Handler().postDelayed(() -> {
+            if (id == R.id.papers) {
+                navigateToPapersActivity();
+            } else if (id == R.id.clubs) {
+                navigateToClubsActivity();
+            } else if (id == R.id.logout) {
+                handleLogout();
+            } else if (id == R.id.contact) {
+                navigateToContactActivity();
+            } else if (id == R.id.share) {
+                shareApp();
+            }
+        }, 250);
+
         return true;
     }
 
@@ -422,6 +428,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Stop animation when activity is paused
         if (announcementsContainer != null) {
             announcementsContainer.clearAnimation();
+        }
+    }
+
+    /**
+     * Share app functionality
+     */
+    private void shareApp() {
+        try {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "DDU E-Connect App");
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    "Check out DDU E-Connect app for accessing university papers, clubs, and announcements!\n\n" +
+                            "Features:\n" +
+                            "• Access exam papers and study materials\n" +
+                            "• Join university clubs and activities\n" +
+                            "• Stay updated with announcements\n" +
+                            "• Secure Google Sign-In");
+
+            startActivity(Intent.createChooser(shareIntent, "Share DDU E-Connect"));
+            Log.d(TAG, "Share intent created successfully");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to share app", e);
+            android.widget.Toast.makeText(this, "Unable to share app", android.widget.Toast.LENGTH_SHORT).show();
         }
     }
 

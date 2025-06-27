@@ -124,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(String errorMessage) {
                 Log.w(TAG, "User verification failed: " + errorMessage);
-                // If user doesn't exist in Firestore or verification fails,
-                // still allow them to sign in (they'll be created on sign-in)
-                navigateToHome();
+                // User doesn't exist in Firestore, redirect to sign-in to create account
+                Log.d(TAG, "Redirecting to sign-in to create user account");
+                navigateToSignIn();
             }
         });
     }

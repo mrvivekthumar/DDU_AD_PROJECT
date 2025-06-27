@@ -26,7 +26,7 @@ public class GoogleAuthRepository {
     private static final String DEFAULT_ROLE = "student";
 
     // Replace with your actual web client ID from Firebase Console
-    private static final String WEB_CLIENT_ID = "YOUR_WEB_CLIENT_ID_HERE";
+    private static final String WEB_CLIENT_ID = "567048253235-eamihipa3vc015jh0fdo3qmspl33r36n.apps.googleusercontent.com";
 
     private GoogleSignInClient googleSignInClient;
     private FirebaseFirestore db;

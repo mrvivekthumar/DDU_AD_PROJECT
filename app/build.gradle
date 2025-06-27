@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
 }
 
@@ -58,7 +59,7 @@ dependencies {
     // Firebase Firestore (Keep this for user data storage)
     implementation 'com.google.firebase:firebase-firestore'
 
-    // Firebase Analytics (Optional but recommended)\
+    // Firebase Analytics (Optional but recommended)
     implementation 'com.google.firebase:firebase-analytics'
 
     // Keep Firebase Storage for PDF uploads

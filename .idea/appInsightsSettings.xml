@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.ddu_e_connect" />
-                  <option name="mobileSdkAppId" value="1:441727187240:android:a1fb275b2024b4acd5b81d" />
-                  <option name="projectId" value="ddu-e-connect-8c5e8" />
-                  <option name="projectNumber" value="441727187240" />
+                  <option name="mobileSdkAppId" value="1:567048253235:android:86438e8c895f10b5eb1846" />
+                  <option name="projectId" value="ddu-e-connect-e6870" />
+                  <option name="projectNumber" value="567048253235" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
