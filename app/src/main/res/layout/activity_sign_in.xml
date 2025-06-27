@@ -1,107 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:padding="24dp">
+    android:fillViewport="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:padding="24dp">
 
-        <!-- App Logo or Title (Optional) -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="DDU E-Connect"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_color1"
-            android:layout_marginBottom="48dp"
-            android:gravity="center" />
+        <!-- Background decorative elements -->
+        <View
+            android:id="@+id/decorativeCircle1"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="@drawable/decorative_circle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="-75dp"
+            android:layout_marginEnd="-75dp"
+            android:alpha="0.1" />
 
-        <!-- Email EditText (Hidden by code) -->
-        <EditText
-            android:id="@+id/emailEditText"
+        <View
+            android:id="@+id/decorativeCircle2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/decorative_circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="-50dp"
+            android:layout_marginStart="-50dp"
+            android:alpha="0.05" />
+
+        <!-- App Logo -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/logoCard"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="60dp"
+            app:cardCornerRadius="60dp"
+            app:cardElevation="12dp"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_launcher_logo_round"
+                android:contentDescription="DDU E-Connect Logo" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Welcome Text Container -->
+        <LinearLayout
+            android:id="@+id/welcomeContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/custom_edittext"
-            android:drawableLeft="@drawable/ic_email"
-            android:drawablePadding="10dp"
-            android:hint="Email"
-            android:padding="12dp"
-            android:textColor="@color/EditText_text_color"
-            android:textColorHint="@color/EditText_text_color"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@+id/logoCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Password EditText (Hidden by code) -->
-        <EditText
-            android:id="@+id/passwordEditText"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome to"
+                android:textColor="@color/text_color2"
+                android:textSize="18sp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DDU E-Connect"
+                android:textColor="@color/text_color1"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect • Learn • Grow"
+                android:textColor="@color/text_color2"
+                android:textSize="16sp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
+
+        <!-- Sign-In Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/signInCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_edittext"
-            android:drawableLeft="@drawable/ic_lock"
-            android:drawablePadding="10dp"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:textColor="@color/EditText_text_color"
-            android:textColorHint="@color/EditText_text_color"
-            android:visibility="gone" />
+            android:layout_marginTop="48dp"
+            style="@style/AppCardStyle"
+            app:layout_constraintTop_toBottomOf="@+id/welcomeContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- "Forgot Password?" Link (Hidden by code) -->
-        <TextView
-            android:id="@+id/forgotPasswordLink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="end"
-            android:minHeight="48dp"
-            android:text="Forgot Password?"
-            android:textColor="@color/text_color1"
-            android:textSize="14sp"
-            android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="32dp"
+                android:gravity="center">
 
-        <!-- Google Sign-In Button -->
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/signInButton"
+                <!-- Hidden email field (kept for compatibility) -->
+                <EditText
+                    android:id="@+id/emailEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <!-- Hidden password field (kept for compatibility) -->
+                <EditText
+                    android:id="@+id/passwordEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <!-- Sign-In Instructions -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/info_background"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_login"
+                        app:tint="@color/text_color1"
+                        android:layout_marginEnd="12dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Sign in with your Google account to access exclusive university resources"
+                        android:textColor="@color/text_color2"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="2dp" />
+
+                </LinearLayout>
+
+                <!-- Google Sign-In Button Container -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <!-- Enhanced Google Sign-In Button -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="6dp"
+                        app:cardBackgroundColor="@color/white"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.gms.common.SignInButton
+                            android:id="@+id/signInButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_margin="2dp" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Security Note -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="16dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_lock"
+                            app:tint="@color/text_color1"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Secure authentication with Google"
+                            android:textColor="@color/text_color2"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Features Preview -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/featuresCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="32dp"
+            style="@style/AppCardStyle"
+            app:layout_constraintTop_toBottomOf="@+id/signInCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Sign-In Information Text -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What you'll get access to:"
+                    android:textColor="@color/text_color1"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
+
+                <include layout="@layout/feature_item"
+                    android:id="@+id/feature1" />
+
+                <include layout="@layout/feature_item"
+                    android:id="@+id/feature2" />
+
+                <include layout="@layout/feature_item"
+                    android:id="@+id/feature3" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Hidden elements (kept for compatibility) -->
         <TextView
+            android:id="@+id/forgotPasswordLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign in with your Google account to continue"
-            android:textColor="@color/text_color2"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:layout_marginTop="16dp" />
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/registerLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- "Don't have an account? Register" Link (Hidden by code) -->
-    <TextView
-        android:id="@+id/registerLink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:minHeight="48dp"
-        android:text="Don't have an account? Register"
-        android:textColor="@color/text_color1"
-        android:textSize="16sp"
-        android:visibility="gone" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</RelativeLayout>
+</ScrollView>

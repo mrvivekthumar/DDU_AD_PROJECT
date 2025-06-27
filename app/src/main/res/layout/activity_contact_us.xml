@@ -1,136 +1,391 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:fillViewport="true">
 
-    <!-- Admin 1 Card -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/admin_card_1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/colorPrimaryDark"
-        android:layout_gravity="center">
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <!-- Header Section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            style="@style/AppCardStyle">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/phone"
+                    app:tint="@color/text_color1"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/icon_background"
+                    android:padding="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contact Us"
+                    android:textColor="@color/text_color1"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Meet the team behind DDU E-Connect"
+                    android:textColor="@color/text_color2"
+                    android:textSize="16sp"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Admin Cards Container -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="32dp"
-            android:background="@drawable/admincard_background">
+            android:orientation="vertical">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/admin1_image"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="12dp"
-                app:shapeAppearanceOverlay="@style/CircleShape"
-                android:src="@drawable/admin1_image"
-                android:scaleType="centerCrop" />
-
-            <TextView
-                android:id="@+id/admin1_name"
-                android:layout_width="wrap_content"
+            <!-- Admin 1 Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/admin_card_1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Admin 1 Name"
-                android:textSize="22sp"
-                android:textColor="@color/text_color1"
-                android:layout_gravity="center_horizontal" />
+                android:layout_marginBottom="20dp"
+                style="@style/AppCardStyle">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/baseline_email_24" />
-
-                <TextView
-                    android:id="@+id/admin1_email"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="admin1@example.com"
-                    android:textSize="20sp"
-                    android:textColor="@color/text_color1"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="4dp"/>
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    android:background="@drawable/admin_card_background">
+
+                    <!-- Profile Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <!-- Profile Picture -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            app:cardCornerRadius="40dp"
+                            app:cardElevation="8dp"
+                            app:cardBackgroundColor="@color/white"
+                            android:layout_marginEnd="16dp">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/admin1_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/admin1_image"
+                                android:scaleType="centerCrop"
+                                app:shapeAppearanceOverlay="@style/CircleShape" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Name and Role -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/admin1_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Vivek Thumar"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:layout_marginBottom="4dp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:background="@drawable/role_badge_background"
+                                android:padding="8dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:src="@drawable/person_icon"
+                                    app:tint="@color/text_color1"
+                                    android:layout_marginEnd="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lead Developer"
+                                    android:textColor="@color/text_color1"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Contact Information -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/contact_info_background"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/baseline_email_24"
+                            android:layout_marginEnd="12dp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email"
+                                android:textColor="@color/text_color1"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/admin1_email"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="mrvivekthumar@gmail.com"
+                                android:textColor="@color/text_color2"
+                                android:textSize="16sp"
+                                android:autoLink="email"
+                                android:linksClickable="true" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_email"
+                            android:background="@drawable/contact_action_background"
+                            android:padding="6dp"
+                            app:tint="@color/text_color1" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Admin 2 Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/admin_card_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                style="@style/AppCardStyle">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    android:background="@drawable/admin_card_background">
+
+                    <!-- Profile Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <!-- Profile Picture -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            app:cardCornerRadius="40dp"
+                            app:cardElevation="8dp"
+                            app:cardBackgroundColor="@color/white"
+                            android:layout_marginEnd="16dp">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/admin2_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/admin2_image"
+                                android:scaleType="centerCrop"
+                                app:shapeAppearanceOverlay="@style/CircleShape" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Name and Role -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/admin2_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Kuldip Vaghasiya"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:layout_marginBottom="4dp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:background="@drawable/role_badge_background"
+                                android:padding="8dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:src="@drawable/person_icon"
+                                    app:tint="@color/text_color1"
+                                    android:layout_marginEnd="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Co-Developer"
+                                    android:textColor="@color/text_color1"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Contact Information -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/contact_info_background"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/baseline_email_24"
+                            android:layout_marginEnd="12dp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email"
+                                android:textColor="@color/text_color1"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/admin2_email"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="kuldipvaghasiya0@gmail.com"
+                                android:textColor="@color/text_color2"
+                                android:textSize="16sp"
+                                android:autoLink="email"
+                                android:linksClickable="true" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_email"
+                            android:background="@drawable/contact_action_background"
+                            android:padding="6dp"
+                            app:tint="@color/text_color1" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
-    <!-- Admin 2 Card -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/admin_card_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/colorPrimaryDark"
-        android:layout_gravity="center">
-
-        <LinearLayout
+        <!-- Footer Section -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="32dp"
-            android:background="@drawable/admincard_background">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/admin2_image"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="12dp"
-                app:shapeAppearanceOverlay="@style/CircleShape"
-                android:src="@drawable/admin2_image"
-                android:scaleType="centerCrop" />
-
-            <TextView
-                android:id="@+id/admin2_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Admin 2 Name"
-                android:textSize="22sp"
-                android:textColor="@color/text_color1"
-                android:layout_gravity="center_horizontal" />
+            android:layout_marginBottom="16dp"
+            style="@style/AppCardStyle">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/baseline_email_24" />
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:gravity="center">
 
                 <TextView
-                    android:id="@+id/admin2_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="admin2@example.com"
-                    android:textSize="20sp"
+                    android:text="Have questions or suggestions?"
                     android:textColor="@color/text_color1"
-                    android:layout_gravity="center" />
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="We'd love to hear from you! Feel free to reach out to our team."
+                    android:textColor="@color/text_color2"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="2dp" />
+
             </LinearLayout>
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-</LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

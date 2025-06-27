@@ -1,13 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pressed state -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/button_text_color" />
+            <corners android:radius="12dp" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/button_background" />
+        </shape>
+    </item>
 
-    <solid android:color="@color/button_background" />
+    <!-- Disabled state -->
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="#80FFD60A" />
+            <corners android:radius="12dp" />
+            <stroke
+                android:width="1dp"
+                android:color="#80EAEBF8" />
+        </shape>
+    </item>
 
-    <corners android:radius="8dp" />
-
-    <stroke
-        android:width="1dp"
-        android:color="@color/button_border" />
-
-</shape>
+    <!-- Normal state -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="@color/button_background"
+                android:endColor="#E6C200"
+                android:angle="135" />
+            <corners android:radius="12dp" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/text_color1" />
+        </shape>
+    </item>
+</selector>

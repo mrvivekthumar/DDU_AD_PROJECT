@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--for admin photo-->
+    <!-- Circle shape for profile images -->
     <style name="CircleShape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
 
+    <!-- Enhanced custom button style -->
     <style name="CustomButtonStyle">
         <item name="android:background">@drawable/custom_button</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- Enhanced EditText style -->
+    <style name="CustomEditTextStyle">
+        <item name="android:background">@drawable/custom_edittext</item>
+        <item name="android:textColor">@color/text_color2</item>
+        <item name="android:textColorHint">@color/EditText_text_color</item>
         <item name="android:textSize">16sp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
     </style>
+
     <!-- Base application theme -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize your theme here -->
+    <style name="AppTheme" parent="Theme.DDU_E_CONNECT">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -25,8 +41,12 @@
         <item name="android:textColor">@color/textColor</item>
     </style>
 
-    <!-- Splash screen theme -->
-    <style name="SplashTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_screen_background</item>
+    <!-- Card style for consistent card design -->
+    <style name="AppCardStyle">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="cardBackgroundColor">@color/EditText_background</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/text_color1</item>
     </style>
 </resources>

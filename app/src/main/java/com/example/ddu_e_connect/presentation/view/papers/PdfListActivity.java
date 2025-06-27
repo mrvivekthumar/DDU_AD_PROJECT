@@ -1,4 +1,4 @@
-package com.example.ddu_e_connect.views;
+package com.example.ddu_e_connect.presentation.view.papers;
 
 import android.content.Intent;
 import android.net.Uri;

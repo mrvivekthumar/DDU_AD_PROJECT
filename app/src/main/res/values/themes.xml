@@ -1,9 +1,41 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.DDU_E_CONNECT" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <!-- Base application theme -->
+    <style name="Base.Theme.DDU_E_CONNECT" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Background colors -->
+        <item name="android:windowBackground">@color/background</item>
+        <item name="backgroundColor">@color/background</item>
+
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/text_color1</item>
+        <item name="android:textColorSecondary">@color/text_color2</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@color/background</item>
     </style>
 
-    <style name="Theme.DDU_E_CONNECT" parent="Base.Theme.DDU_E_CONNECT" />
+    <!-- Main app theme -->
+    <style name="Theme.DDU_E_CONNECT" parent="Base.Theme.DDU_E_CONNECT">
+        <!-- Additional customizations can go here -->
+    </style>
+
+    <!-- Splash screen theme -->
+    <style name="SplashTheme" parent="Base.Theme.DDU_E_CONNECT">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

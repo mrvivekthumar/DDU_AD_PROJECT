@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -12,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.databinding.ActivitySignInBinding;
 import com.example.ddu_e_connect.data.repository.GoogleAuthRepository;
 import com.example.ddu_e_connect.presentation.view.home.HomeActivity;
@@ -32,8 +35,9 @@ public class SignInActivity extends AppCompatActivity {
         initializeComponents();
         setupGoogleSignInLauncher();
         setupClickListeners();
+        setupFeaturesList();
 
-        Log.d(TAG, "SignInActivity initialized");
+        Log.d(TAG, "SignInActivity initialized with enhanced UI");
     }
 
     /**
@@ -68,34 +72,78 @@ public class SignInActivity extends AppCompatActivity {
      * Setup click listeners
      */
     private void setupClickListeners() {
-        // Your signInButton is already a Google SignInButton, perfect!
+        // Google Sign-In button click
         binding.signInButton.setOnClickListener(v -> startGoogleSignIn());
 
-        // Hide other buttons since we're only using Google Sign-In
-        hideOtherAuthOptions();
+        // Add subtle animation to sign-in card
+        binding.signInCard.setOnClickListener(v -> {
+            // Optional: Add click feedback to the card
+            v.animate()
+                    .scaleX(0.98f)
+                    .scaleY(0.98f)
+                    .setDuration(100)
+                    .withEndAction(() -> {
+                        v.animate()
+                                .scaleX(1.0f)
+                                .scaleY(1.0f)
+                                .setDuration(100)
+                                .start();
+                    })
+                    .start();
+        });
+
+        // Logo click for fun interaction
+        binding.logoCard.setOnClickListener(v -> {
+            v.animate()
+                    .rotationY(360f)
+                    .setDuration(800)
+                    .withEndAction(() -> v.setRotationY(0f))
+                    .start();
+
+            showInfo("Welcome to DDU E-Connect! 🎓");
+        });
     }
 
     /**
-     * Hide other authentication options
+     * Setup features list in the preview card
      */
-    private void hideOtherAuthOptions() {
-        // Hide email/password fields since we're using Google Sign-In
-        if (binding.emailEditText != null) {
-            binding.emailEditText.setVisibility(View.GONE);
-        }
-        if (binding.passwordEditText != null) {
-            binding.passwordEditText.setVisibility(View.GONE);
-        }
+    private void setupFeaturesList() {
+        try {
+            // Feature 1: Papers
+            setupFeatureItem(R.id.feature1, R.drawable.paper, "Access exam papers and study materials");
 
-        // Google SignInButton doesn't need text changes - it has default Google styling
-        // Just keep it visible for Google Sign-In
+            // Feature 2: Clubs
+            setupFeatureItem(R.id.feature2, R.drawable.club, "Join university clubs and activities");
 
-        // Hide other links
-        if (binding.forgotPasswordLink != null) {
-            binding.forgotPasswordLink.setVisibility(View.GONE);
+            // Feature 3: Contact
+            setupFeatureItem(R.id.feature3, R.drawable.phone, "Stay updated with announcements");
+
+            Log.d(TAG, "Features list setup completed");
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up features list", e);
         }
-        if (binding.registerLink != null) {
-            binding.registerLink.setVisibility(View.GONE);
+    }
+
+    /**
+     * Setup individual feature item
+     */
+    private void setupFeatureItem(int featureId, int iconRes, String featureText) {
+        try {
+            View featureView = binding.getRoot().findViewById(featureId);
+            if (featureView != null) {
+                ImageView featureIcon = featureView.findViewById(R.id.featureIcon);
+                TextView featureTextView = featureView.findViewById(R.id.featureText);
+
+                if (featureIcon != null) {
+                    featureIcon.setImageResource(iconRes);
+                }
+
+                if (featureTextView != null) {
+                    featureTextView.setText(featureText);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up feature item: " + featureId, e);
         }
     }
 
@@ -131,10 +179,10 @@ public class SignInActivity extends AppCompatActivity {
                 setLoadingState(false);
 
                 // Show success message
-                showSuccess("Welcome, " + userProfile.getName() + "!");
+                showSuccess("Welcome, " + getFirstName(userProfile.getName()) + "! 🎉");
 
-                // Navigate to home
-                navigateToHome();
+                // Add slight delay for better UX
+                new android.os.Handler().postDelayed(() -> navigateToHome(), 1000);
             }
 
             @Override
@@ -147,18 +195,40 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     /**
+     * Get first name from full name
+     */
+    private String getFirstName(String fullName) {
+        if (fullName != null && !fullName.trim().isEmpty()) {
+            String[] nameParts = fullName.trim().split("\\s+");
+            return nameParts[0];
+        }
+        return "User";
+    }
+
+    /**
      * Set loading state for UI
      */
     private void setLoadingState(boolean isLoading) {
-        // Google SignInButton - just disable/enable it
+        // Disable/enable sign-in button
         if (binding.signInButton != null) {
             binding.signInButton.setEnabled(!isLoading);
-            // Google SignInButton automatically shows proper text and styling
         }
 
-        // Show loading message via Toast instead
+        // Add loading feedback
         if (isLoading) {
-            Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
+            showInfo("Signing in... Please wait");
+
+            // Add subtle loading animation to the sign-in card
+            binding.signInCard.animate()
+                    .alpha(0.7f)
+                    .setDuration(300)
+                    .start();
+        } else {
+            // Restore normal appearance
+            binding.signInCard.animate()
+                    .alpha(1.0f)
+                    .setDuration(300)
+                    .start();
         }
     }
 
@@ -167,10 +237,20 @@ public class SignInActivity extends AppCompatActivity {
      */
     private void navigateToHome() {
         Log.d(TAG, "Navigating to HomeActivity");
-        Intent intent = new Intent(SignInActivity.this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+
+        try {
+            Intent intent = new Intent(SignInActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            // Add transition animation
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
+            finish();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to navigate to HomeActivity", e);
+            showError("Navigation failed. Please try again.");
+        }
     }
 
     /**
@@ -189,6 +269,14 @@ public class SignInActivity extends AppCompatActivity {
         Log.d(TAG, "Success message: " + message);
     }
 
+    /**
+     * Show info message to user
+     */
+    private void showInfo(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Info message: " + message);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -201,8 +289,23 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Reset any loading states when returning to activity
+        setLoadingState(false);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
+        Log.d(TAG, "SignInActivity destroyed");
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Add confirmation dialog for exit if needed
+        super.onBackPressed();
     }
 }
