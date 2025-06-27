@@ -14,6 +14,121 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <!-- App Logo -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/ic_launcher_logo_round"
+            android:layout_marginBottom="32dp"
+            android:contentDescription="DDU E-Connect Logo" />
+
+        <!-- Welcome Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to\nDDU E-Connect"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_color1"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Welcome Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect with your university community"
+            android:textSize="18sp"
+            android:textColor="@color/text_color2"
+            android:layout_marginBottom="32dp"
+            android:gravity="center" />
+
+        <!-- Features List -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="48dp">
+
+            <!-- Feature 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/paper"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="Papers icon" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Access exam papers and study materials"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_color2" />
+
+            </LinearLayout>
+
+            <!-- Feature 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/club"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="Clubs icon" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Join university clubs and activities"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_color2" />
+
+            </LinearLayout>
+
+            <!-- Feature 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/phone"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="Contact icon" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Stay updated with announcements"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_color2" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Email EditText (Hidden by Java code) -->
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
@@ -25,8 +140,10 @@
             android:hint="Email"
             android:padding="12dp"
             android:textColor="@color/EditText_text_color"
-            android:textColorHint="@color/EditText_text_color" />
+            android:textColorHint="@color/EditText_text_color"
+            android:visibility="gone" />
 
+        <!-- Password EditText (Hidden by Java code) -->
         <EditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
@@ -39,8 +156,10 @@
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="@color/EditText_text_color"
-            android:textColorHint="@color/EditText_text_color" />
+            android:textColorHint="@color/EditText_text_color"
+            android:visibility="gone" />
 
+        <!-- Get Started Button -->
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
@@ -48,8 +167,10 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/custom_button"
             android:padding="16dp"
-            android:text="Register"
-            android:textColor="@color/button_text_color" />
+            android:text="Get Started with Google"
+            android:textColor="@color/button_text_color"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
     <!-- Bottom Link -->

@@ -1,45 +1,26 @@
 {
   "project_info": {
-    "project_number": "357733121575",
-    "firebase_url": "https://ddu-e-connect-default-rtdb.firebaseio.com",
-    "project_id": "ddu-e-connect",
-    "storage_bucket": "ddu-e-connect.appspot.com"
+    "project_number": "441727187240",
+    "project_id": "ddu-e-connect-8c5e8",
+    "storage_bucket": "ddu-e-connect-8c5e8.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:357733121575:android:9e6e29f5131a4debb35802",
+        "mobilesdk_app_id": "1:441727187240:android:a1fb275b2024b4acd5b81d",
         "android_client_info": {
           "package_name": "com.example.ddu_e_connect"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "357733121575-8tpov4e0csajvb12qgpkjt5rh14bdm52.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.ddu_e_connect",
-            "certificate_hash": "a925ee6d8599c250cc1ff6aa6833d8259a668ee4"
-          }
-        },
-        {
-          "client_id": "357733121575-2ckrrnvd94vd6er1qc2mgrtavglb8kkf.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCzaCx43e2EEfNdMC_wxI3lFUbIYWbBPjI"
+          "current_key": "AIzaSyDIYiiv6MMjy7u55MTcjeQjnbOu2-dbb_U"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "357733121575-2ckrrnvd94vd6er1qc2mgrtavglb8kkf.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

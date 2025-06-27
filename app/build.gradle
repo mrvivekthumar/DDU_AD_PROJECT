@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id 'com.android.application'
     id 'com.google.gms.google-services'
 }
 
@@ -49,27 +49,32 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation libs.glide
 
-//    Firebase authentication dependency
-    implementation libs.google.firebase.auth
-    implementation platform(libs.firebase.bom.v3320)
-    implementation libs.play.services.auth
+    // Firebase BOM - manages all Firebase library versions
+    implementation platform('com.google.firebase:firebase-bom:33.15.0')
 
+    // Google Sign-In (NEW - Main dependency for Google Authentication)
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
-//    Firebase Storage dependency
-    implementation libs.firebase.firestore
-    implementation libs.firebase.storage.v2021
-    implementation libs.firebase.auth.v2211
+    // Firebase Firestore (Keep this for user data storage)
+    implementation 'com.google.firebase:firebase-firestore'
 
-//    For app check
-    implementation libs.firebase.appcheck
-    implementation libs.firebase.appcheck.safetynet
+    // Firebase Analytics (Optional but recommended)\
+    implementation 'com.google.firebase:firebase-analytics'
 
-//    For the card layout
+    // Keep Firebase Storage for PDF uploads
+    implementation 'com.google.firebase:firebase-storage'
+
+    // Keep Firebase App Check for security
+    // Firebase App Check for security (Updated dependency)
+    implementation 'com.google.firebase:firebase-appcheck'
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
+
+    implementation("androidx.credentials:credentials:1.2.2") // Use the latest version
+    // For Sign in with Google support with Credential Manager
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+
+    // For the card layout
     implementation libs.cardview
-
-
-
-
 }
 
 apply plugin: 'com.google.gms.google-services'

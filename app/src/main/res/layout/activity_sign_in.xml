@@ -12,7 +12,18 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <!-- Email EditText -->
+        <!-- App Logo or Title (Optional) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DDU E-Connect"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_color1"
+            android:layout_marginBottom="48dp"
+            android:gravity="center" />
+
+        <!-- Email EditText (Hidden by code) -->
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
@@ -24,9 +35,10 @@
             android:hint="Email"
             android:padding="12dp"
             android:textColor="@color/EditText_text_color"
-            android:textColorHint="@color/EditText_text_color" />
+            android:textColorHint="@color/EditText_text_color"
+            android:visibility="gone" />
 
-        <!-- Password EditText -->
+        <!-- Password EditText (Hidden by code) -->
         <EditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
@@ -38,9 +50,10 @@
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="@color/EditText_text_color"
-            android:textColorHint="@color/EditText_text_color" />
+            android:textColorHint="@color/EditText_text_color"
+            android:visibility="gone" />
 
-        <!-- "Forgot Password?" Link -->
+        <!-- "Forgot Password?" Link (Hidden by code) -->
         <TextView
             android:id="@+id/forgotPasswordLink"
             android:layout_width="match_parent"
@@ -52,20 +65,30 @@
             android:minHeight="48dp"
             android:text="Forgot Password?"
             android:textColor="@color/text_color1"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
-        <Button
+        <!-- Google Sign-In Button -->
+        <com.google.android.gms.common.SignInButton
             android:id="@+id/signInButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/forgotPasswordLink"
             android:layout_marginTop="24dp"
-            android:background="@drawable/custom_button"
-            android:padding="16dp"
-            android:text="Sign In" />
+            android:layout_marginBottom="16dp" />
+
+        <!-- Sign-In Information Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign in with your Google account to continue"
+            android:textColor="@color/text_color2"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginTop="16dp" />
+
     </LinearLayout>
 
-    <!-- "Don't have an account? Register" Link -->
+    <!-- "Don't have an account? Register" Link (Hidden by code) -->
     <TextView
         android:id="@+id/registerLink"
         android:layout_width="wrap_content"
@@ -78,5 +101,7 @@
         android:minHeight="48dp"
         android:text="Don't have an account? Register"
         android:textColor="@color/text_color1"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:visibility="gone" />
+
 </RelativeLayout>

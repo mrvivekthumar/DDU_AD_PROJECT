@@ -6,7 +6,7 @@
     android:id="@+id/drawlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.HomeActivity">
+    tools:context=".presentation.view.home.HomeActivity">
 
     <!-- Main content -->
     <LinearLayout
@@ -22,11 +22,11 @@
 
             <ImageButton
                 android:id="@+id/imgbtntoggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Toggle Drawer"
-                android:padding="5dp"
+                android:contentDescription="Open navigation menu"
+                android:padding="8dp"
                 android:src="@drawable/navigation_icon" />
         </androidx.appcompat.widget.Toolbar>
 
@@ -66,7 +66,8 @@
                     android:layout_weight="1"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:overScrollMode="never">
+                    android:overScrollMode="never"
+                    android:contentDescription="Announcements scroll area">
 
                     <LinearLayout
                         android:id="@+id/announcementsContainer"
@@ -86,6 +87,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/custom_button"
                 android:padding="16dp"
                 android:text="Upload PDF"

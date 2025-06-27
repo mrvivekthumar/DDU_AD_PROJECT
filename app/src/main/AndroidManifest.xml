@@ -28,28 +28,28 @@
             android:name=".views.ClubsActivity"
             android:exported="false" />
         <activity
-            android:name=".views.LogoutActivity"
+            android:name=".presentation.view.home.LogoutActivity"
             android:exported="false" />
         <activity
             android:name=".views.PdfListActivity"
             android:exported="false" />
         <activity
-            android:name=".views.PapersActivity"
+            android:name=".presentation.view.papers.PapersActivity"
             android:exported="false" />
         <activity
-            android:name=".views.UploadActivity"
+            android:name=".presentation.view.papers.UploadActivity"
             android:exported="false" />
         <activity
-            android:name=".views.HomeActivity"
+            android:name=".presentation.view.home.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".views.ForgotPasswordActivity"
+            android:name=".presentation.view.auth.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".views.RegistrationActivity"
+            android:name=".presentation.view.auth.RegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".views.SignInActivity"
+            android:name=".presentation.view.auth.SignInActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

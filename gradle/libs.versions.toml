@@ -8,8 +8,11 @@ firebaseBom = "33.1.2"
 firebaseBomVersion = "33.2.0"
 firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.0"
+firebaseFirestoreVersion = "24.9.1"
 firebaseStorageVersion = "20.2.1"
 glide = "4.16.0"
+googleFirebaseAuth = "22.3.0"
+googleFirebaseStorage = "20.3.0"
 googleServices = "4.4.2"
 googleServicesVersion = "4.3.15"
 gradle = "8.0.2"
@@ -25,6 +28,7 @@ firebaseAuth = "23.0.0"
 playServicesAuth = "21.2.0"
 firebaseStorage = "21.0.0"
 firebaseInappmessagingDisplay = "21.0.0"
+playServicesAuthVersion = "20.7.0"
 
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
@@ -32,11 +36,14 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-appcheck = { module = "com.google.firebase:firebase-appcheck", version.ref = "firebaseAppcheck" }
 firebase-appcheck-safetynet = { module = "com.google.firebase:firebase-appcheck-safetynet", version.ref = "firebaseAppcheckSafetynet" }
 firebase-auth-v2211 = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuthVersion" }
+firebase-auth-v2230 = { module = "com.google.firebase:firebase-auth", version.ref = "googleFirebaseAuth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-bom-v3320 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-firestore-v2491 = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestoreVersion" }
 firebase-storage-v2021 = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorageVersion" }
+firebase-storage-v2030 = { module = "com.google.firebase:firebase-storage", version.ref = "googleFirebaseStorage" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gms-play-services-auth = { module = "com.google.android.gms:play-services-auth" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -56,6 +63,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 firebase-inappmessaging-display = { group = "com.google.firebase", name = "firebase-inappmessaging-display", version.ref = "firebaseInappmessagingDisplay" }
+play-services-auth-v2070 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
