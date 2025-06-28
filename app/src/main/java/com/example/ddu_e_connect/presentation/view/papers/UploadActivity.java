@@ -9,6 +9,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
 import com.example.ddu_e_connect.data.source.remote.GoogleDriveRepository;
+import com.example.ddu_e_connect.data.source.remote.RoleManager;
 import com.example.ddu_e_connect.databinding.ActivityUploadBinding;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
 import com.example.ddu_e_connect.presentation.view.home.HomeActivity;
@@ -56,6 +59,11 @@ public class UploadActivity extends AppCompatActivity {
     private GoogleDriveRepository driveRepository;
     private GoogleSignInAccount currentUser;
     private ActivityResultLauncher<Intent> pdfPickerLauncher;
+
+
+    private ImageView fileSelectedIcon;
+    private ImageView fileNotSelectedIcon;
+    private View progressSection;
 
     // Upload Data
     private Uri selectedPdfUri;
@@ -102,27 +110,52 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     /**
-     * Initialize UI components
+     * Initialize UI components - FIXED VERSION
      */
     private void initializeUIComponents() {
         // Find UI components
-        pdfNameEditText = binding.pdfNameEditText;
-        selectPdfButton = binding.selectPdfButton;
-        uploadPdfButton = binding.uploadPdfButton;
+        pdfNameEditText = findViewById(R.id.pdfNameEditText);
+        selectPdfButton = findViewById(R.id.selectPdfButton);
+        uploadPdfButton = findViewById(R.id.uploadPdfButton);
 
-        // Create additional UI components programmatically
-        setupCategorySpinner();
-        setupFolderSpinner();
-        setupProgressComponents();
-        setupNewFolderComponents();
+        // Progress components
+        uploadProgressBar = findViewById(R.id.uploadProgressBar);
+        uploadStatusText = findViewById(R.id.uploadStatusText);
+        progressSection = findViewById(R.id.progressSection);
+
+        // File selection indicators
+        fileSelectedIcon = findViewById(R.id.fileSelectedIcon);
+        fileNotSelectedIcon = findViewById(R.id.fileNotSelectedIcon);
+
+        // Spinners - ASSIGN TO CLASS FIELDS
+        categorySpinner = findViewById(R.id.categorySpinner);
+        folderSpinner = findViewById(R.id.folderSpinner);
+
+        // Back button
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> onBackPressed());
+
+        // Quick action buttons
+        findViewById(R.id.viewPapersButton).setOnClickListener(v -> {
+            Intent intent = new Intent(this, PapersActivity.class);
+            startActivity(intent);
+        });
+
+        findViewById(R.id.helpButton).setOnClickListener(v -> {
+            Intent intent = new Intent(this,
+                    com.example.ddu_e_connect.presentation.view.contact.ContactUsActivity.class);
+            startActivity(intent);
+        });
+
+        // Initialize spinners
+        setupSpinners();
     }
 
     /**
-     * Setup category spinner
+     * Setup category and folder spinners
      */
-    private void setupCategorySpinner() {
-        // Add category spinner above PDF name field
-        categorySpinner = new Spinner(this);
+    private void setupSpinners() {
+        // Setup category spinner
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, categories);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -132,22 +165,15 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedCategory = categoryKeys[position];
-                loadFoldersForCategory();
                 Log.d(TAG, "Category selected: " + selectedCategory);
+                loadFoldersForCategory();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // Add to layout (you'll need to update your XML)
-    }
-
-    /**
-     * Setup folder spinner
-     */
-    private void setupFolderSpinner() {
-        folderSpinner = new Spinner(this);
+        // Setup folder spinner (will be populated when category is selected)
         updateFolderSpinner();
 
         folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -175,41 +201,6 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     /**
-     * Setup progress components
-     */
-    private void setupProgressComponents() {
-        uploadProgressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-        uploadProgressBar.setVisibility(View.GONE);
-        uploadProgressBar.setMax(100);
-
-        uploadStatusText = new TextView(this);
-        uploadStatusText.setVisibility(View.GONE);
-        uploadStatusText.setTextColor(getResources().getColor(R.color.text_color2));
-    }
-
-    /**
-     * Setup new folder components
-     */
-    private void setupNewFolderComponents() {
-        newFolderEditText = new EditText(this);
-        newFolderEditText.setHint("Enter new folder name");
-        newFolderEditText.setVisibility(View.GONE);
-
-        createFolderButton = new Button(this);
-        createFolderButton.setText("Create Folder");
-        createFolderButton.setVisibility(View.GONE);
-
-        createFolderButton.setOnClickListener(v -> {
-            String folderName = newFolderEditText.getText().toString().trim();
-            if (!folderName.isEmpty()) {
-                createFolder(folderName);
-            } else {
-                showError("Please enter a folder name");
-            }
-        });
-    }
-
-    /**
      * Setup PDF picker launcher
      */
     private void setupPdfPickerLauncher() {
@@ -222,6 +213,16 @@ public class UploadActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Handle Google Drive authorization result
+        if (driveRepository != null) {
+            driveRepository.handleAuthorizationResult(requestCode, resultCode);
+        }
     }
 
     /**
@@ -237,17 +238,40 @@ public class UploadActivity extends AppCompatActivity {
         // Initially disable upload button
         updateUploadButtonState();
 
-        // Load initial folders
-        loadFoldersForCategory();
+        // Load initial folders (this will be called after spinners are set up)
+        if (driveRepository != null) {
+            loadFoldersForCategory();
+        }
+
+        setupTextInputListeners();
+
     }
 
     /**
-     * Check if user has upload permissions
+     * Add text change listener to PDF name field
+     */
+    private void setupTextInputListeners() {
+        pdfNameEditText.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateUploadButtonState();
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+    }
+
+    /**
+     * ENHANCED: Check if user has upload permissions with detailed logging
      */
     private void checkUserPermissions() {
         if (currentUser == null) {
             Log.w(TAG, "No user signed in");
-            showError("You must be signed in to upload files");
+            showUnauthorizedDialog("unknown");
             navigateToSignIn();
             return;
         }
@@ -257,18 +281,66 @@ public class UploadActivity extends AppCompatActivity {
         authRepository.fetchUserRole(currentUser.getId(), new GoogleAuthRepository.RoleCallback() {
             @Override
             public void onRoleFetched(String role) {
-                Log.d(TAG, "User role: " + role);
-                handleRolePermissions(role);
+                Log.d(TAG, "User role fetched: " + role);
+
+                boolean canUpload = RoleManager.canUpload(role);
+                Log.d(TAG, "Can upload: " + canUpload + " (Role: " + role + ")");
+
+                if (canUpload) {
+                    enableUploadFeatures(role);
+                } else {
+                    showUnauthorizedDialog(role);
+                    disableUploadFeatures();
+                }
             }
 
             @Override
             public void onError(String errorMessage) {
                 Log.e(TAG, "Failed to fetch user role: " + errorMessage);
-                showError("Failed to verify permissions: " + errorMessage);
-                disableUploadFeatures();
+
+                // Try to re-assign role based on email as fallback
+                attemptRoleReassignment();
             }
         });
     }
+
+    /**
+     * Attempt role reassignment if role fetch fails
+     */
+    private void attemptRoleReassignment() {
+        if (currentUser == null) return;
+
+        Log.d(TAG, "Attempting role reassignment for: " + currentUser.getEmail());
+
+        RoleManager roleManager = new RoleManager(this);
+        roleManager.assignRoleBasedOnEmail(
+                currentUser.getEmail(),
+                currentUser.getId(),
+                new RoleManager.RoleCallback() {
+                    @Override
+                    public void onRoleAssigned(String role) {
+                        Log.d(TAG, "Role reassigned successfully: " + role);
+
+                        boolean canUpload = RoleManager.canUpload(role);
+                        if (canUpload) {
+                            enableUploadFeatures(role);
+                        } else {
+                            showUnauthorizedDialog(role);
+                            disableUploadFeatures();
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e(TAG, "Role reassignment failed: " + errorMessage);
+                        showUnauthorizedDialog("unknown");
+                        disableUploadFeatures();
+                    }
+                }
+        );
+    }
+
+
 
     /**
      * Enhanced method to handle role-based permissions
@@ -305,24 +377,26 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     /**
-     * Show enhanced unauthorized access dialog with role information
+     * ENHANCED: Show detailed unauthorized dialog
      */
     private void showUnauthorizedDialog(String userRole) {
         String title = "🔒 Upload Permission Required";
-
         String message = buildUnauthorizedMessage(userRole);
 
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
-                .setIcon(R.drawable.ic_lock) // Using your existing lock icon
+                .setIcon(R.drawable.ic_lock)
                 .setPositiveButton("📧 Contact Admin", (dialog, which) -> {
                     contactAdminForPermission();
                 })
-                .setNeutralButton("ℹ️ Learn More", (dialog, which) -> {
-                    showRoleInformation();
+                .setNeutralButton("ℹ️ View Papers", (dialog, which) -> {
+                    // Redirect to papers activity where they can view PDFs
+                    Intent intent = new Intent(this, PapersActivity.class);
+                    startActivity(intent);
+                    finish();
                 })
-                .setNegativeButton("🏠 Go Back", (dialog, which) -> {
+                .setNegativeButton("🏠 Go Home", (dialog, which) -> {
                     navigateToHome();
                 })
                 .setCancelable(false)
@@ -356,33 +430,31 @@ public class UploadActivity extends AppCompatActivity {
         }
     }
 
+
     /**
-     * Build unauthorized message based on user role
+     * Build detailed unauthorized message
      */
     private String buildUnauthorizedMessage(String userRole) {
         StringBuilder message = new StringBuilder();
 
-        message.append("🚫 You don't have permission to upload files.\n\n");
+        message.append("🚫 Upload access denied.\n\n");
+        message.append("👤 Your role: ").append(userRole.toUpperCase()).append("\n");
+        message.append("✅ Required: ADMIN or HELPER\n\n");
 
-        // Show current role
-        message.append("👤 Your current role: ").append(userRole.toUpperCase()).append("\n");
-        message.append("✅ Required roles: ADMIN or HELPER\n\n");
-
-        // Role-specific explanations
         if ("student".equalsIgnoreCase(userRole)) {
             message.append("📚 As a STUDENT, you can:\n");
-            message.append("• Access all study materials\n");
-            message.append("• Download exam papers\n");
-            message.append("• Browse club documents\n");
-            message.append("• Join university clubs\n\n");
+            message.append("• ✅ View all study materials\n");
+            message.append("• ✅ Download exam papers\n");
+            message.append("• ✅ Access club documents\n");
+            message.append("• ❌ Upload files\n\n");
 
-            message.append("🎯 To get upload permission:\n");
-            message.append("• Contact an administrator\n");
-            message.append("• Request HELPER role if you're faculty\n");
+            message.append("🎯 To get upload access:\n");
+            message.append("• Contact administrator\n");
+            message.append("• Request HELPER role (for faculty)\n");
             message.append("• Use institutional email (@ddu.ac.in)\n");
         } else {
-            message.append("❓ Unknown role detected.\n");
-            message.append("Please contact support for role assignment.\n");
+            message.append("❓ Role verification failed.\n");
+            message.append("Please contact support.\n");
         }
 
         return message.toString();
@@ -472,6 +544,8 @@ public class UploadActivity extends AppCompatActivity {
     private void enableUploadFeatures(String role) {
         selectPdfButton.setEnabled(true);
         pdfNameEditText.setEnabled(true);
+        categorySpinner.setEnabled(true);
+        folderSpinner.setEnabled(true);
 
         // Show welcome message
         showSuccess("Welcome " + role.toUpperCase() + "! You can upload PDFs to help students.");
@@ -655,7 +729,14 @@ public class UploadActivity extends AppCompatActivity {
      */
     private void onPdfSelected() {
         selectPdfButton.setText("PDF Selected ✓");
-        selectPdfButton.setBackgroundColor(getResources().getColor(R.color.button_background));
+
+        // Show/hide file icons
+        if (fileSelectedIcon != null) {
+            fileSelectedIcon.setVisibility(View.VISIBLE);
+        }
+        if (fileNotSelectedIcon != null) {
+            fileNotSelectedIcon.setVisibility(View.GONE);
+        }
 
         updateUploadButtonState();
         showSuccess("PDF file selected successfully!");
@@ -819,14 +900,12 @@ public class UploadActivity extends AppCompatActivity {
         selectPdfButton.setEnabled(!isUploading);
         uploadPdfButton.setEnabled(!isUploading);
         pdfNameEditText.setEnabled(!isUploading);
-        categorySpinner.setEnabled(!isUploading);
-        folderSpinner.setEnabled(!isUploading);
 
-        if (uploadProgressBar != null) {
-            uploadProgressBar.setVisibility(isUploading ? View.VISIBLE : View.GONE);
-        }
-        if (uploadStatusText != null) {
-            uploadStatusText.setVisibility(isUploading ? View.VISIBLE : View.GONE);
+        if (categorySpinner != null) categorySpinner.setEnabled(!isUploading);
+        if (folderSpinner != null) folderSpinner.setEnabled(!isUploading);
+
+        if (progressSection != null) {
+            progressSection.setVisibility(isUploading ? View.VISIBLE : View.GONE);
         }
 
         if (!isUploading) {
@@ -853,13 +932,28 @@ public class UploadActivity extends AppCompatActivity {
         selectedPdfUri = null;
         pdfNameEditText.setText("");
         selectPdfButton.setText("Select PDF");
-        selectPdfButton.setBackgroundColor(getResources().getColor(R.color.EditText_background));
+
+        // Reset file selection icons
+        if (fileSelectedIcon != null) {
+            fileSelectedIcon.setVisibility(View.GONE);
+        }
+        if (fileNotSelectedIcon != null) {
+            fileNotSelectedIcon.setVisibility(View.VISIBLE);
+        }
+
         uploadPdfButton.setText("Upload PDF");
         uploadPdfButton.setEnabled(false);
+
         categorySpinner.setSelection(0);
         folderSpinner.setSelection(0);
+
         selectedFolderId = null;
         selectedFolderName = "";
+
+        // Hide progress section
+        if (progressSection != null) {
+            progressSection.setVisibility(View.GONE);
+        }
     }
 
     // Helper methods
@@ -927,5 +1021,43 @@ public class UploadActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         navigateToHome();
+    }
+
+    /**
+     * DEBUG: Test current user role (add this to any activity for testing)
+     */
+    private void debugUserRole() {
+        GoogleSignInAccount user = authRepository.getCurrentUser();
+        if (user == null) {
+            Log.e(TAG, "DEBUG: No user signed in");
+            return;
+        }
+
+        authRepository.fetchUserRole(user.getId(), new GoogleAuthRepository.RoleCallback() {
+            @Override
+            public void onRoleFetched(String role) {
+                String debugInfo = "🔍 ROLE DEBUG:\n\n" +
+                        "👤 User: " + user.getDisplayName() + "\n" +
+                        "📧 Email: " + user.getEmail() + "\n" +
+                        "🔐 Role: " + role.toUpperCase() + "\n\n" +
+                        "Permissions:\n" +
+                        "📤 Can Upload: " + (RoleManager.canUpload(role) ? "✅ YES" : "❌ NO") + "\n" +
+                        "👑 Is Admin: " + (RoleManager.isAdmin(role) ? "✅ YES" : "❌ NO") + "\n" +
+                        "🤝 Is Helper: " + (RoleManager.isHelper(role) ? "✅ YES" : "❌ NO");
+
+                Log.d(TAG, debugInfo);
+
+                new AlertDialog.Builder(UploadActivity.this)
+                        .setTitle("🔍 Role Debug")
+                        .setMessage(debugInfo)
+                        .setPositiveButton("OK", null)
+                        .show();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "DEBUG: Role fetch failed: " + errorMessage);
+            }
+        });
     }
 }

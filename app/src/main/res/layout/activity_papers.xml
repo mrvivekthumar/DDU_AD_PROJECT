@@ -1,13 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".presentation.view.papers.PapersActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <!-- App Bar Layout -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        app:elevation="0dp">
+
+        <!-- Enhanced Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/background"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingEnd="16dp">
+
+                <!-- Back Button -->
+                <ImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Go back"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_backspace"
+                    app:tint="@color/text_color1" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <!-- Dynamic Title -->
+                <TextView
+                    android:id="@+id/toolbarTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📚 Study Materials"
+                    android:textColor="@color/text_color1"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <!-- Search/Filter Button -->
+                <ImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Search"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/text_color1" />
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <!-- Breadcrumb Navigation -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/breadcrumbCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:visibility="gone"
+            style="@style/AppCardStyle">
+
+            <TextView
+                android:id="@+id/breadcrumbText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📁 Home > Academic Papers > Data Structures"
+                android:textColor="@color/text_color2"
+                android:textSize="14sp"
+                android:padding="12dp"
+                android:drawableStart="@drawable/ic_folder"
+                android:drawablePadding="8dp"
+                app:drawableTint="@color/text_color1" />
+
+        </androidx.cardview.widget.CardView>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Main Content Area -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Category Grid (Only visible at root level) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoriesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:visibility="visible"
+                tools:listitem="@layout/item_category_card" />
+
+            <!-- Files and Folders List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="outsideOverlay"
+                android:visibility="gone"
+                tools:listitem="@layout/item_folder" />
+
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/emptyStateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/ic_folder"
+                    app:tint="@color/text_color2"
+                    android:alpha="0.5"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/emptyStateTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Documents Found"
+                    android:textColor="@color/text_color1"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/emptyStateMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This folder is empty. Documents will appear here when uploaded."
+                    android:textColor="@color/text_color2"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="20dp" />
+
+                <Button
+                    android:id="@+id/goBackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🏠 Go Back"
+                    android:background="@drawable/custom_button"
+                    android:textColor="@color/button_text_color"
+                    android:padding="12dp" />
+
+            </LinearLayout>
+
+            <!-- Loading State -->
+            <LinearLayout
+                android:id="@+id/loadingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:indeterminateTint="@color/button_background" />
+
+                <TextView
+                    android:id="@+id/loadingText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loading documents..."
+                    android:textColor="@color/text_color2"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Floating Action Button (for admins only) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:scrollbars="vertical" />
+        android:contentDescription="Upload PDF"
+        android:src="@drawable/ic_upload"
+        app:backgroundTint="@color/button_background"
+        app:tint="@color/button_text_color"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -10,36 +10,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="16dp">
 
-        <!-- Header Section -->
+        <!-- Enhanced Header Section -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="20dp"
             style="@style/AppCardStyle">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="20dp"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:padding="24dp">
 
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_upload"
-                    app:tint="@color/text_color1"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/icon_background"
-                    android:padding="12dp" />
-
+                <!-- Header with Back Button -->
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageButton
+                        android:id="@+id/backButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_backspace"
+                        app:tint="@color/text_color1"
+                        android:contentDescription="Go back" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -47,27 +53,41 @@
                         android:text="Upload PDF"
                         android:textColor="@color/text_color1"
                         android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="4dp" />
+                        android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Share educational content with students"
-                        android:textColor="@color/text_color2"
-                        android:textSize="14sp" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_upload"
+                        app:tint="@color/button_background"
+                        android:background="@drawable/icon_background"
+                        android:padding="12dp" />
 
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Share educational content with students"
+                    android:textColor="@color/text_color2"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal" />
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Upload Form -->
+        <!-- Upload Form Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="20dp"
             style="@style/AppCardStyle">
 
             <LinearLayout
@@ -80,43 +100,61 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Category *"
+                    android:text="📂 Select Category *"
                     android:textColor="@color/text_color1"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
 
-                <Spinner
-                    android:id="@+id/categorySpinner"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/custom_edittext"
-                    android:padding="12dp" />
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/EditText_background">
+
+                    <Spinner
+                        android:id="@+id/categorySpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:padding="16dp"
+                        android:background="@android:color/transparent" />
+
+                </androidx.cardview.widget.CardView>
 
                 <!-- Folder Selection -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Folder (Optional)"
+                    android:text="📁 Select Folder (Optional)"
                     android:textColor="@color/text_color1"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
 
-                <Spinner
-                    android:id="@+id/folderSpinner"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/custom_edittext"
-                    android:padding="12dp" />
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/EditText_background">
+
+                    <Spinner
+                        android:id="@+id/folderSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:padding="16dp"
+                        android:background="@android:color/transparent" />
+
+                </androidx.cardview.widget.CardView>
 
                 <!-- PDF Name Input -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="PDF Name *"
+                    android:text="📄 PDF Name *"
                     android:textColor="@color/text_color1"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -125,10 +163,10 @@
                 <EditText
                     android:id="@+id/pdfNameEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginBottom="24dp"
                     android:background="@drawable/custom_edittext"
-                    android:drawableLeft="@drawable/pdf_file"
+                    android:drawableStart="@drawable/pdf_file"
                     android:drawablePadding="12dp"
                     android:hint="Enter PDF file name (without .pdf)"
                     android:padding="16dp"
@@ -139,6 +177,15 @@
                     android:maxLines="1" />
 
                 <!-- File Selection Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📎 Select File *"
+                    android:textColor="@color/text_color1"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -146,76 +193,128 @@
                     android:gravity="center_vertical"
                     android:layout_marginBottom="20dp">
 
-                    <Button
-                        android:id="@+id/selectPdfButton"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
                         android:layout_height="56dp"
                         android:layout_weight="1"
                         android:layout_marginEnd="12dp"
-                        android:background="@drawable/custom_edittext"
-                        android:drawableLeft="@drawable/ic_folder"
-                        android:drawablePadding="12dp"
-                        android:text="Select PDF File"
-                        android:textColor="@color/text_color1"
-                        android:textSize="16sp"
-                        android:gravity="center"
-                        android:padding="16dp" />
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/EditText_background">
 
-                    <ImageView
-                        android:id="@+id/fileSelectedIcon"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_pdf"
-                        android:background="@drawable/icon_background"
-                        android:padding="12dp"
-                        android:visibility="gone"
-                        app:tint="@color/button_background" />
+                        <Button
+                            android:id="@+id/selectPdfButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:drawableStart="@drawable/ic_folder"
+                            android:drawablePadding="12dp"
+                            android:text="Select PDF File"
+                            android:textColor="@color/text_color1"
+                            android:textSize="16sp"
+                            android:gravity="center"
+                            android:textAllCaps="false" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        app:cardCornerRadius="28dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/EditText_background">
+
+                        <ImageView
+                            android:id="@+id/fileSelectedIcon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_pdf"
+                            android:visibility="gone"
+                            app:tint="@color/button_background" />
+
+                        <ImageView
+                            android:id="@+id/fileNotSelectedIcon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_folder"
+                            app:tint="@color/text_color2" />
+
+                    </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
 
-                <!-- Upload Progress -->
-                <ProgressBar
-                    android:id="@+id/uploadProgressBar"
-                    style="?android:attr/progressBarStyleHorizontal"
+                <!-- Upload Progress Section -->
+                <LinearLayout
+                    android:id="@+id/progressSection"
                     android:layout_width="match_parent"
-                    android:layout_height="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:visibility="gone"
-                    android:progressTint="@color/button_background" />
-
-                <TextView
-                    android:id="@+id/uploadStatusText"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:textColor="@color/text_color2"
-                    android:textSize="14sp"
-                    android:visibility="gone" />
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginBottom="20dp">
 
-                <!-- Upload Button -->
-                <Button
-                    android:id="@+id/uploadPdfButton"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📤 Upload Progress"
+                        android:textColor="@color/text_color1"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <ProgressBar
+                        android:id="@+id/uploadProgressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:progressTint="@color/button_background"
+                        android:progressBackgroundTint="@color/EditText_background" />
+
+                    <TextView
+                        android:id="@+id/uploadStatusText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_color2"
+                        android:textSize="14sp"
+                        android:text="Preparing upload..." />
+
+                </LinearLayout>
+
+                <!-- Enhanced Upload Button -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/custom_button"
-                    android:drawableLeft="@drawable/ic_upload"
-                    android:drawablePadding="12dp"
-                    android:text="Upload PDF"
-                    android:textColor="@color/button_text_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:enabled="false"
-                    android:padding="16dp" />
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="@color/button_background">
+
+                    <Button
+                        android:id="@+id/uploadPdfButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@android:color/transparent"
+                        android:drawableStart="@drawable/ic_upload"
+                        android:drawablePadding="12dp"
+                        android:text="Upload PDF"
+                        android:textColor="@color/button_text_color"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:enabled="false"
+                        android:textAllCaps="false" />
+
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Upload Guidelines -->
+        <!-- Upload Guidelines Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="20dp"
             style="@style/AppCardStyle">
 
             <LinearLayout
@@ -241,32 +340,34 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Upload Guidelines"
+                        android:text="📋 Upload Guidelines"
                         android:textColor="@color/text_color1"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
 
+                <!-- Guidelines List -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- Guideline 1 -->
+                    <!-- Guideline Item Template -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:padding="8dp"
+                        android:background="@drawable/info_background">
 
                         <TextView
-                            android:layout_width="20dp"
+                            android:layout_width="24dp"
                             android:layout_height="wrap_content"
-                            android:text="•"
-                            android:textColor="@color/button_background"
+                            android:text="✅"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -274,24 +375,25 @@
                             android:layout_weight="1"
                             android:text="Only PDF files are allowed (Max 50MB)"
                             android:textColor="@color/text_color2"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:layout_marginStart="8dp" />
 
                     </LinearLayout>
 
-                    <!-- Guideline 2 -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:padding="8dp"
+                        android:background="@drawable/info_background">
 
                         <TextView
-                            android:layout_width="20dp"
+                            android:layout_width="24dp"
                             android:layout_height="wrap_content"
-                            android:text="•"
-                            android:textColor="@color/button_background"
+                            android:text="✅"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -299,56 +401,59 @@
                             android:layout_weight="1"
                             android:text="Use descriptive names (e.g., 'Data_Structures_Chapter_1')"
                             android:textColor="@color/text_color2"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:layout_marginStart="8dp" />
 
                     </LinearLayout>
 
-                    <!-- Guideline 3 -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:padding="8dp"
+                        android:background="@drawable/info_background">
 
                         <TextView
-                            android:layout_width="20dp"
+                            android:layout_width="24dp"
                             android:layout_height="wrap_content"
-                            android:text="•"
-                            android:textColor="@color/button_background"
+                            android:text="✅"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Choose appropriate category and folder for organization"
+                            android:text="Choose appropriate category and folder"
                             android:textColor="@color/text_color2"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:layout_marginStart="8dp" />
 
                     </LinearLayout>
 
-                    <!-- Guideline 4 -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:background="@drawable/info_background">
 
                         <TextView
-                            android:layout_width="20dp"
+                            android:layout_width="24dp"
                             android:layout_height="wrap_content"
-                            android:text="•"
-                            android:textColor="@color/button_background"
+                            android:text="✅"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Ensure content is educational and appropriate for students"
+                            android:text="Ensure content is educational and appropriate"
                             android:textColor="@color/text_color2"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:layout_marginStart="8dp" />
 
                     </LinearLayout>
 
@@ -362,36 +467,53 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/viewPapersButton"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/paper"
-                android:drawablePadding="8dp"
-                android:text="View Papers"
-                android:textColor="@color/text_color1"
-                android:textSize="14sp"
-                style="?android:attr/borderlessButtonStyle" />
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/EditText_background">
 
-            <Button
-                android:id="@+id/helpButton"
+                <Button
+                    android:id="@+id/viewPapersButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@drawable/paper"
+                    android:drawablePadding="8dp"
+                    android:text="View Papers"
+                    android:textColor="@color/text_color1"
+                    android:textSize="14sp"
+                    android:textAllCaps="false" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/phone"
-                android:drawablePadding="8dp"
-                android:text="Need Help?"
-                android:textColor="@color/text_color1"
-                android:textSize="14sp"
-                style="?android:attr/borderlessButtonStyle" />
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/EditText_background">
+
+                <Button
+                    android:id="@+id/helpButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@drawable/phone"
+                    android:drawablePadding="8dp"
+                    android:text="Need Help?"
+                    android:textColor="@color/text_color1"
+                    android:textSize="14sp"
+                    android:textAllCaps="false" />
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 

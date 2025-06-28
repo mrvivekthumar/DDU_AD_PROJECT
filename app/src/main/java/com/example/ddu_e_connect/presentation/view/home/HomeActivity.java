@@ -167,30 +167,68 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Update upload button visibility based on user role
+     * ENHANCED: Update upload button visibility based on user role
      */
     private void updateUploadButtonVisibility(String role) {
-        if (binding.uploadPdfButton != null) {
-            boolean isAuthorized = "helper".equalsIgnoreCase(role) ||
-                    "admin".equalsIgnoreCase(role);
+        if (binding.uploadPdfButton == null) {
+            Log.w(TAG, "Upload button not found in layout");
+            return;
+        }
 
-            binding.uploadPdfButton.setVisibility(isAuthorized ? View.VISIBLE : View.GONE);
+        boolean isAuthorized = RoleManager.canUpload(role);
+
+        Log.d(TAG, "Role: " + role + ", Can upload: " + isAuthorized);
+
+        if (isAuthorized) {
+            // Show upload button for admin/helper
+            binding.uploadPdfButton.setVisibility(View.VISIBLE);
+            binding.uploadPdfButton.setEnabled(true);
 
             // Update button text based on role
-            if (isAuthorized) {
-                if ("admin".equalsIgnoreCase(role)) {
-                    binding.uploadPdfButton.setText("📤 Upload PDF (Admin)");
-                } else if ("helper".equalsIgnoreCase(role)) {
-                    binding.uploadPdfButton.setText("📤 Upload PDF (Helper)");
-                }
+            if (RoleManager.isAdmin(role)) {
+                binding.uploadPdfButton.setText("📤 Upload PDF (Admin)");
+                binding.uploadPdfButton.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_upload, 0, 0, 0);
+            } else if (RoleManager.isHelper(role)) {
+                binding.uploadPdfButton.setText("📤 Upload PDF (Helper)");
+                binding.uploadPdfButton.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_upload, 0, 0, 0);
             }
 
-            Log.d(TAG, "Upload button visibility: " + (isAuthorized ? "VISIBLE" : "GONE") +
-                    " for role: " + role);
+            // Set click listener
+            binding.uploadPdfButton.setOnClickListener(v -> {
+                Log.d(TAG, "Upload button clicked by " + role);
+                navigateToUploadActivity();
+            });
 
-            // Show a welcome message based on role
-            showRoleWelcomeMessage(role, isAuthorized);
+        } else {
+            // Hide upload button for students
+            binding.uploadPdfButton.setVisibility(View.GONE);
+            Log.d(TAG, "Upload button hidden for student role");
         }
+
+        // Show appropriate welcome message
+        showRoleBasedWelcomeMessage(role, isAuthorized);
+    }
+
+    /**
+     * Show role-based welcome message
+     */
+    private void showRoleBasedWelcomeMessage(String role, boolean canUpload) {
+        String message;
+
+        if (RoleManager.isAdmin(role)) {
+            message = "👑 Welcome Admin! You have full access to upload and manage PDFs.";
+        } else if (RoleManager.isHelper(role)) {
+            message = "🤝 Welcome Helper! You can upload PDFs to help students.";
+        } else {
+            message = "👨‍🎓 Welcome Student! You can access all study materials and papers.";
+        }
+
+        // Show welcome message (optional)
+        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_LONG).show();
+
+        Log.d(TAG, "Welcome message shown: " + message);
     }
 
     /**
@@ -717,4 +755,5 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             });
         }
     }
+
 }

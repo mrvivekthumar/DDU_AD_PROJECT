@@ -30,6 +30,7 @@ import java.util.concurrent.Executors;
  */
 public class GoogleDriveRepository {
     private static final String TAG = "GoogleDriveRepository";
+    private AuthCallback pendingAuthCallback;
     private static final String APP_NAME = "DDU E-Connect";
     private static final int DRIVE_AUTHORIZATION_REQUEST_CODE = 1001;
 
@@ -135,48 +136,68 @@ public class GoogleDriveRepository {
     }
 
     /**
-     * Handle user recoverable auth errors
+     * Handle user recoverable auth errors with proper UI flow
      */
     private void handleUserRecoverableAuthError(UserRecoverableAuthIOException e) {
-        Log.d(TAG, "Handling user recoverable auth error");
+        Log.d(TAG, "Handling user recoverable auth error for Drive permission");
 
-        // We need to handle this in the UI thread through the calling activity
-        if (context instanceof Activity) {
-            ((Activity) context).runOnUiThread(() -> {
-                try {
-                    // Start the authorization intent
-                    Intent intent = e.getIntent();
-                    ((Activity) context).startActivityForResult(intent, DRIVE_AUTHORIZATION_REQUEST_CODE);
-                } catch (Exception ex) {
-                    Log.e(TAG, "Failed to start authorization intent", ex);
+        if (!(context instanceof Activity)) {
+            Log.e(TAG, "Cannot handle auth error - context is not an Activity");
+            return;
+        }
+
+        Activity activity = (Activity) context;
+
+        activity.runOnUiThread(() -> {
+            showDrivePermissionDialog(e, new AuthCallback() {
+                @Override
+                public void onAuthSuccess() {
+                    Log.d(TAG, "Drive permission granted after user consent");
+                    // Re-initialize the drive service
+                    initializeDriveService();
+                }
+
+                @Override
+                public void onAuthFailure(String errorMessage) {
+                    Log.e(TAG, "Drive permission failed after user consent: " + errorMessage);
                 }
             });
-        }
+        });
     }
 
     /**
-     * Initialize folder structure asynchronously
+     * ENHANCED: Initialize folder structure with better error handling and logging
      */
     private void initializeFolderStructureAsync() {
-        try {
-            // Check if root folder exists, create if not
-            rootFolderId = findOrCreateFolder(ROOT_FOLDER_NAME, null);
-            Log.d(TAG, "Root folder ID: " + rootFolderId);
+        executor.execute(() -> {
+            try {
+                Log.d(TAG, "Starting folder structure initialization...");
 
-            // Create main category folders
-            findOrCreateFolder(ACADEMIC_PAPERS_FOLDER, rootFolderId);
-            findOrCreateFolder(STUDY_MATERIALS_FOLDER, rootFolderId);
-            findOrCreateFolder(EXAM_PAPERS_FOLDER, rootFolderId);
-            findOrCreateFolder(CLUB_DOCUMENTS_FOLDER, rootFolderId);
+                // Check if root folder exists, create if not
+                rootFolderId = findOrCreateFolder(ROOT_FOLDER_NAME, null);
+                Log.d(TAG, "Root folder ID: " + rootFolderId);
 
-            Log.d(TAG, "Folder structure initialized successfully");
+                // Create main category folders and store their IDs
+                String academicFolderId = findOrCreateFolder(ACADEMIC_PAPERS_FOLDER, rootFolderId);
+                String studyFolderId = findOrCreateFolder(STUDY_MATERIALS_FOLDER, rootFolderId);
+                String examFolderId = findOrCreateFolder(EXAM_PAPERS_FOLDER, rootFolderId);
+                String clubFolderId = findOrCreateFolder(CLUB_DOCUMENTS_FOLDER, rootFolderId);
 
-        } catch (UserRecoverableAuthIOException e) {
-            Log.w(TAG, "User consent needed for folder initialization");
-            handleUserRecoverableAuthError(e);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to initialize folder structure", e);
-        }
+                Log.d(TAG, "Category folders created:");
+                Log.d(TAG, "Academic: " + academicFolderId);
+                Log.d(TAG, "Study: " + studyFolderId);
+                Log.d(TAG, "Exam: " + examFolderId);
+                Log.d(TAG, "Club: " + clubFolderId);
+
+                Log.d(TAG, "Folder structure initialized successfully");
+
+            } catch (UserRecoverableAuthIOException e) {
+                Log.w(TAG, "User consent needed for folder initialization");
+                handleUserRecoverableAuthError(e);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to initialize folder structure", e);
+            }
+        });
     }
 
     /**
@@ -232,7 +253,7 @@ public class GoogleDriveRepository {
     }
 
     /**
-     * Show Drive permission dialog to user
+     * Show Drive permission dialog to user - UPDATED VERSION
      */
     private void showDrivePermissionDialog(UserRecoverableAuthIOException authException, AuthCallback callback) {
         if (!(context instanceof Activity)) {
@@ -247,22 +268,29 @@ public class GoogleDriveRepository {
                 "• 📤 Upload PDF files\n" +
                 "• 📁 Create study folders\n" +
                 "• 📚 Organize academic materials\n\n" +
-                "This permission is safe and only allows the app to manage files it creates.";
+                "This permission is safe and only allows the app to manage files it creates.\n\n" +
+                "⚠️ You'll be redirected to Google to grant permission.";
 
         new androidx.appcompat.app.AlertDialog.Builder(activity)
                 .setTitle("📂 Drive Access Needed")
                 .setMessage(message)
                 .setPositiveButton("Grant Permission", (dialog, which) -> {
                     try {
+                        Log.d(TAG, "User agreed to grant Drive permission");
                         // Start the authorization flow
                         Intent intent = authException.getIntent();
                         activity.startActivityForResult(intent, DRIVE_AUTHORIZATION_REQUEST_CODE);
+
+                        // Store callback for later use
+                        pendingAuthCallback = callback;
+
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to start Drive authorization", e);
                         callback.onAuthFailure("Failed to start authorization: " + e.getMessage());
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> {
+                    Log.d(TAG, "User denied Drive permission");
                     callback.onAuthFailure("User denied Drive permission");
                 })
                 .setCancelable(false)
@@ -311,6 +339,33 @@ public class GoogleDriveRepository {
     }
 
     /**
+     * Handle the result from Google Drive authorization
+     * Call this from your Activity's onActivityResult
+     */
+    public void handleAuthorizationResult(int requestCode, int resultCode) {
+        if (requestCode == DRIVE_AUTHORIZATION_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Log.d(TAG, "Drive authorization successful");
+
+                // Re-initialize drive service with new permissions
+                initializeDriveService();
+
+                if (pendingAuthCallback != null) {
+                    pendingAuthCallback.onAuthSuccess();
+                    pendingAuthCallback = null;
+                }
+            } else {
+                Log.w(TAG, "Drive authorization failed or cancelled");
+
+                if (pendingAuthCallback != null) {
+                    pendingAuthCallback.onAuthFailure("Authorization was cancelled or failed");
+                    pendingAuthCallback = null;
+                }
+            }
+        }
+    }
+
+    /**
      * Get list of available folders in a category
      */
     public void getFoldersInCategory(String category, FolderCallback callback) {
@@ -338,12 +393,38 @@ public class GoogleDriveRepository {
                 }
 
                 Log.d(TAG, "Found " + folders.size() + " folders in category: " + category);
-                callback.onFoldersLoaded(folders);
 
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to get folders", e);
-                callback.onFailure("Failed to load folders: " + e.getMessage());
+                if (context instanceof Activity) {
+                    ((Activity) context).runOnUiThread(() -> {
+                        callback.onFoldersLoaded(folders);
+                    });
+                } else {
+                    callback.onFoldersLoaded(folders);
+                }
+
+            } catch (UserRecoverableAuthIOException e) {
+                Log.w(TAG, "User consent needed for getting folders");
+                // FIX: Run callback on main thread
+                if (context instanceof Activity) {
+                    ((Activity) context).runOnUiThread(() -> {
+                        handleUserRecoverableAuthError(e);
+                        callback.onFailure("Google Drive permission required. Please grant access.");
+                    });
+                } else {
+                    callback.onFailure("Google Drive permission required");
+                }
             }
+            catch (Exception e) {
+                    Log.e(TAG, "Failed to get folders", e);
+                    // FIX: Run callback on main thread
+                    if (context instanceof Activity) {
+                        ((Activity) context).runOnUiThread(() -> {
+                            callback.onFailure("Failed to load folders: " + e.getMessage());
+                        });
+                    } else {
+                        callback.onFailure("Failed to load folders: " + e.getMessage());
+                    }
+                }
         });
     }
 
@@ -413,9 +494,11 @@ public class GoogleDriveRepository {
     }
 
     /**
-     * Helper method to find or create folder
+     * ENHANCED: Find or create folder with better logging
      */
     private String findOrCreateFolder(String folderName, String parentId) throws IOException {
+        Log.d(TAG, "Finding/creating folder: " + folderName + " in parent: " + parentId);
+
         // Search for existing folder
         String query = "mimeType='application/vnd.google-apps.folder' and " +
                 "name='" + folderName + "' and " +
@@ -431,7 +514,9 @@ public class GoogleDriveRepository {
                 .execute();
 
         if (!result.getFiles().isEmpty()) {
-            return result.getFiles().get(0).getId();
+            String existingId = result.getFiles().get(0).getId();
+            Log.d(TAG, "Found existing folder '" + folderName + "': " + existingId);
+            return existingId;
         }
 
         // Create new folder
@@ -447,11 +532,12 @@ public class GoogleDriveRepository {
                 .setFields("id")
                 .execute();
 
+        Log.d(TAG, "Created new folder '" + folderName + "': " + folder.getId());
         return folder.getId();
     }
 
     /**
-     * Get category folder ID
+     * ENHANCED: Get category folder ID with better error handling
      */
     private String getCategoryFolderId(String category) throws IOException {
         String folderName;
@@ -469,10 +555,20 @@ public class GoogleDriveRepository {
                 folderName = CLUB_DOCUMENTS_FOLDER;
                 break;
             default:
+                Log.w(TAG, "Unknown category: " + category + ", defaulting to academic");
                 folderName = ACADEMIC_PAPERS_FOLDER;
         }
 
-        return findOrCreateFolder(folderName, rootFolderId);
+        // Ensure root folder exists
+        if (rootFolderId == null) {
+            rootFolderId = findOrCreateFolder(ROOT_FOLDER_NAME, null);
+            Log.d(TAG, "Root folder created/found: " + rootFolderId);
+        }
+
+        String categoryFolderId = findOrCreateFolder(folderName, rootFolderId);
+        Log.d(TAG, "Category folder '" + folderName + "' ID: " + categoryFolderId);
+
+        return categoryFolderId;
     }
 
     /**
@@ -550,5 +646,74 @@ public class GoogleDriveRepository {
         public String getWebViewLink() { return webViewLink; }
         public Long getSize() { return size; }
         public com.google.api.client.util.DateTime getCreatedTime() { return createdTime; }
+    }
+
+
+    /**
+     * DEBUG: Test and display folder structure
+     */
+    public void debugFolderStructure(FolderCallback callback) {
+        if (driveService == null) {
+            callback.onFailure("Drive service not initialized");
+            return;
+        }
+
+        executor.execute(() -> {
+            try {
+                Log.d(TAG, "=== DEBUG: Testing folder structure ===");
+
+                // Test root folder
+                String testRootId = findOrCreateFolder(ROOT_FOLDER_NAME, null);
+                Log.d(TAG, "Root folder ID: " + testRootId);
+
+                // Test each category
+                String[] categories = {"academic", "study", "exam", "club"};
+                List<DriveFolder> debugFolders = new ArrayList<>();
+
+                for (String category : categories) {
+                    try {
+                        String categoryId = getCategoryFolderId(category);
+                        Log.d(TAG, "Category '" + category + "' ID: " + categoryId);
+
+                        // Get folders in this category
+                        String query = "'" + categoryId + "' in parents and " +
+                                "mimeType='application/vnd.google-apps.folder' and " +
+                                "trashed=false";
+
+                        FileList result = driveService.files().list()
+                                .setQ(query)
+                                .setFields("files(id, name)")
+                                .execute();
+
+                        Log.d(TAG, "Found " + result.getFiles().size() + " folders in " + category);
+
+                        for (File file : result.getFiles()) {
+                            debugFolders.add(new DriveFolder(file.getId(),
+                                    "[" + category + "] " + file.getName()));
+                        }
+
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error testing category: " + category, e);
+                    }
+                }
+
+                Log.d(TAG, "=== DEBUG: Folder structure test complete ===");
+
+                // Run callback on main thread
+                if (context instanceof Activity) {
+                    ((Activity) context).runOnUiThread(() -> {
+                        callback.onFoldersLoaded(debugFolders);
+                    });
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Debug folder structure failed", e);
+                if (context instanceof Activity) {
+                    ((Activity) context).runOnUiThread(() -> {
+                        callback.onFailure("Debug failed: " + e.getMessage());
+                    });
+                }
+            }
+        });
     }
 }
