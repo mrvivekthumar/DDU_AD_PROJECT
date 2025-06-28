@@ -37,16 +37,13 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    // UPDATED: Enhanced packaging options to handle Google Drive API conflicts
+    // SIMPLIFIED: Removed Google Drive API conflict handling since we're not using it anymore
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/INDEX.LIST'        // This fixes your current error
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/*.kotlin_module'
     }
 }
 
@@ -58,7 +55,7 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.firebase.appcheck
     implementation libs.firebase.appcheck.playintegrity
-    implementation libs.google.firebase.storage
+    implementation libs.google.firebase.storage  // ✅ Keep this - Firebase Storage
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
@@ -71,20 +68,11 @@ dependencies {
     // Google Sign-In (Keep this for authentication)
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
-    // Firebase Firestore (Keep this for user data storage)
+    // Firebase Services (Keep these)
     implementation 'com.google.firebase:firebase-firestore'
-
-    // Firebase Analytics (Optional but recommended)
+    implementation 'com.google.firebase:firebase-storage'  // ✅ Firebase Storage
     implementation 'com.google.firebase:firebase-analytics'
 
-    // **UPDATED: Google Drive API dependencies with better conflict resolution**
-    implementation 'com.google.apis:google-api-services-drive:v3-rev20240809-2.0.0'
-    implementation 'com.google.api-client:google-api-client:2.2.0'
-    implementation 'com.google.api-client:google-api-client-gson:2.2.0'
-    implementation 'com.google.http-client:google-http-client-gson:1.44.1'
-
-    // **IMPORTANT: Add this for GoogleAccountCredential**
-    implementation 'com.google.api-client:google-api-client-android:1.32.1'
 
     // For the card layout
     implementation libs.cardview

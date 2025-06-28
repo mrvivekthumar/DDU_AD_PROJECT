@@ -19,7 +19,7 @@ import com.example.ddu_e_connect.R;
 import com.example.ddu_e_connect.presentation.ui.adapter.CategoryAdapter;
 import com.example.ddu_e_connect.presentation.ui.adapter.PapersAdapter;
 import com.example.ddu_e_connect.data.source.remote.GoogleAuthRepository;
-import com.example.ddu_e_connect.data.source.remote.GoogleDriveRepository;
+import com.example.ddu_e_connect.data.source.remote.FirebaseStorageRepository; // ✅ NEW: Firebase Storage
 import com.example.ddu_e_connect.data.source.remote.RoleManager;
 import com.example.ddu_e_connect.domain.model.FolderModel;
 import com.example.ddu_e_connect.presentation.view.auth.SignInActivity;
@@ -34,7 +34,7 @@ import java.util.Stack;
 public class PapersActivity extends AppCompatActivity {
     private static final String TAG = "PapersActivity";
 
-    // Google Drive category paths
+    // Firebase Storage category paths (same as UploadActivity)
     private static final String CATEGORY_ACADEMIC = "academic";
     private static final String CATEGORY_STUDY = "study";
     private static final String CATEGORY_EXAM = "exam";
@@ -61,14 +61,14 @@ public class PapersActivity extends AppCompatActivity {
     private List<CategoryAdapter.CategoryItem> categories = new ArrayList<>();
     private List<FolderModel> folderList = new ArrayList<>();
 
-    // Services
-    private GoogleDriveRepository driveRepository;
+    // ✅ UPDATED: Services - Replaced Google Drive with Firebase Storage
+    private FirebaseStorageRepository storageRepository; // ✅ NEW: Firebase Storage Repository
     private GoogleAuthRepository authRepository;
     private GoogleSignInAccount currentUser;
 
     // Navigation tracking
     private String currentCategory;
-    private String currentFolderId;
+    private String currentFolderName; // ✅ UPDATED: Use folder name instead of ID
     private Stack<String> navigationStack = new Stack<>();
     private Stack<String> pathTitleStack = new Stack<>();
     private boolean isAtRootLevel = true;
@@ -83,18 +83,18 @@ public class PapersActivity extends AppCompatActivity {
         checkUserAuthentication();
         loadInitialContent();
 
-        Log.d(TAG, "Enhanced PapersActivity initialized with Google Drive");
+        Log.d(TAG, "✅ Enhanced PapersActivity initialized with Firebase Storage");
     }
 
     /**
-     * Initialize all components
+     * ✅ UPDATED: Initialize all components with Firebase Storage
      */
     private void initializeComponents() {
         // Initialize UI components
         initializeUIComponents();
 
-        // Initialize services
-        driveRepository = new GoogleDriveRepository(this);
+        // ✅ UPDATED: Initialize Firebase Storage instead of Google Drive
+        storageRepository = new FirebaseStorageRepository(this);
         authRepository = new GoogleAuthRepository(this);
         currentUser = authRepository.getCurrentUser();
 
@@ -163,10 +163,9 @@ public class PapersActivity extends AppCompatActivity {
         // Empty state back button
         findViewById(R.id.goBackButton).setOnClickListener(v -> handleBackNavigation());
 
-        // TEMPORARY: Add debug functionality (long press on search button)
-        searchButton.setOnClickListener(v -> showSearchDialog());
+        // ✅ UPDATED: Debug functionality for Firebase Storage
         searchButton.setOnLongClickListener(v -> {
-            debugFolderStructure();
+            debugFirebaseStorage();
             return true;
         });
 
@@ -185,67 +184,87 @@ public class PapersActivity extends AppCompatActivity {
 
         if (isAtRootLevel) {
             loadCategories();
-        } else if (currentFolderId != null) {
-            loadFolderFiles(currentFolderId);
+        } else if (currentFolderName != null) {
+            loadFolderFiles(currentCategory, currentFolderName);
         } else if (currentCategory != null) {
-            loadCategoryFolders(currentCategory);
+            loadCategoryContent(currentCategory);
         }
 
         showInfo("Refreshing content...");
     }
 
     /**
-     * DEBUG: Add this method to test folder structure
+     * ✅ NEW: Debug Firebase Storage structure
      */
-    private void debugFolderStructure() {
-        Log.d(TAG, "Starting folder structure debug...");
+    private void debugFirebaseStorage() {
+        Log.d(TAG, "🔍 Starting Firebase Storage debug...");
 
-        driveRepository.debugFolderStructure(new GoogleDriveRepository.FolderCallback() {
+        storageRepository.testStorageConnection(new FirebaseStorageRepository.UploadCallback() {
             @Override
-            public void onFoldersLoaded(List<GoogleDriveRepository.DriveFolder> folders) {
-                StringBuilder debugInfo = new StringBuilder("🔍 FOLDER STRUCTURE DEBUG:\n\n");
+            public void onSuccess(String result, String message) {
+                Log.d(TAG, "✅ Firebase Storage connection successful");
 
-                debugInfo.append("Total folders found: ").append(folders.size()).append("\n\n");
-
-                for (GoogleDriveRepository.DriveFolder folder : folders) {
-                    debugInfo.append("📁 ").append(folder.getName()).append("\n");
-                    debugInfo.append("   ID: ").append(folder.getId().substring(0, 8)).append("...\n\n");
-                }
-
-                if (folders.isEmpty()) {
-                    debugInfo.append("❌ No folders found!\n");
-                    debugInfo.append("This might explain why PDFs aren't showing.\n\n");
-                    debugInfo.append("Try uploading a PDF first to create the folder structure.");
-                }
-
-                Log.d(TAG, debugInfo.toString());
-
-                new androidx.appcompat.app.AlertDialog.Builder(PapersActivity.this)
-                        .setTitle("🔍 Folder Structure Debug")
-                        .setMessage(debugInfo.toString())
-                        .setPositiveButton("OK", null)
-                        .setNeutralButton("Upload Test PDF", (dialog, which) -> {
-                            navigateToUpload();
-                        })
-                        .show();
+                // Test folder loading for each category
+                debugCategoryFolders();
             }
 
             @Override
-            public void onFolderCreated(String folderId, String folderName) {
+            public void onProgress(int progress) {
                 // Not used
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                Log.e(TAG, "Folder structure debug failed: " + errorMessage);
+                Log.e(TAG, "❌ Firebase Storage connection failed: " + errorMessage);
 
                 new androidx.appcompat.app.AlertDialog.Builder(PapersActivity.this)
-                        .setTitle("❌ Debug Failed")
-                        .setMessage("Failed to debug folder structure:\n" + errorMessage)
+                        .setTitle("❌ Storage Debug Failed")
+                        .setMessage("Firebase Storage connection failed:\n" + errorMessage)
                         .setPositiveButton("OK", null)
                         .show();
             }
         });
+    }
+
+    /**
+     * ✅ NEW: Debug category folders in Firebase Storage
+     */
+    private void debugCategoryFolders() {
+        StringBuilder debugInfo = new StringBuilder("🔍 FIREBASE STORAGE DEBUG:\n\n");
+
+        String[] debugCategories = {CATEGORY_ACADEMIC, CATEGORY_STUDY, CATEGORY_EXAM, CATEGORY_CLUB};
+
+        for (String category : debugCategories) {
+            storageRepository.getFoldersInCategory(category, new FirebaseStorageRepository.FolderCallback() {
+                @Override
+                public void onFoldersLoaded(List<FirebaseStorageRepository.StorageFolder> folders) {
+                    debugInfo.append("📁 Category: ").append(category.toUpperCase()).append("\n");
+                    debugInfo.append("   Folders: ").append(folders.size()).append("\n");
+
+                    for (FirebaseStorageRepository.StorageFolder folder : folders) {
+                        debugInfo.append("   • ").append(folder.getName()).append("\n");
+                    }
+                    debugInfo.append("\n");
+
+                    // Show result after last category
+                    if (category.equals(CATEGORY_CLUB)) {
+                        runOnUiThread(() -> {
+                            new androidx.appcompat.app.AlertDialog.Builder(PapersActivity.this)
+                                    .setTitle("🔍 Firebase Storage Structure")
+                                    .setMessage(debugInfo.toString())
+                                    .setPositiveButton("OK", null)
+                                    .setNeutralButton("Upload Test PDF", (dialog, which) -> navigateToUpload())
+                                    .show();
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    debugInfo.append("❌ Failed to load ").append(category).append(": ").append(errorMessage).append("\n\n");
+                }
+            });
+        }
     }
 
     /**
@@ -297,8 +316,6 @@ public class PapersActivity extends AppCompatActivity {
         }
 
         Log.d(TAG, "User authenticated: " + currentUser.getEmail());
-
-        // Check user role for FAB visibility
         checkUserRoleForFAB();
     }
 
@@ -330,29 +347,14 @@ public class PapersActivity extends AppCompatActivity {
     }
 
     /**
-     * Load initial content
+     * ✅ UPDATED: Load initial content using Firebase Storage
      */
     private void loadInitialContent() {
         showLoadingState(true, "Loading categories...");
 
-        // Request Drive permission first
-        driveRepository.requestDrivePermission(new GoogleDriveRepository.AuthCallback() {
-            @Override
-            public void onAuthSuccess() {
-                Log.d(TAG, "Drive permission granted");
-                loadCategories();
-            }
-
-            @Override
-            public void onAuthFailure(String errorMessage) {
-                Log.e(TAG, "Drive permission failed: " + errorMessage);
-                runOnUiThread(() -> {
-                    showLoadingState(false, null);
-                    showError("Google Drive permission required: " + errorMessage);
-                    showEmptyState("Permission Required", errorMessage);
-                });
-            }
-        });
+        // ✅ SIMPLIFIED: No permission request needed for Firebase Storage
+        // Firebase Storage works automatically with Firebase Authentication
+        loadCategories();
     }
 
     /**
@@ -361,7 +363,6 @@ public class PapersActivity extends AppCompatActivity {
     private void loadCategories() {
         Log.d(TAG, "Loading main categories");
 
-        // Show categories at root level
         isAtRootLevel = true;
         updateUI();
 
@@ -370,7 +371,7 @@ public class PapersActivity extends AppCompatActivity {
             categoryAdapter.notifyDataSetChanged();
         });
 
-        Log.d(TAG, "Main categories loaded and displayed");
+        Log.d(TAG, "✅ Main categories loaded and displayed");
     }
 
     /**
@@ -387,28 +388,68 @@ public class PapersActivity extends AppCompatActivity {
         pathTitleStack.push(category.getTitle());
 
         updateUI();
-        loadCategoryFolders(currentCategory);
+        loadCategoryContent(currentCategory);
     }
 
     /**
-     * Load folders for specific category
+     * ✅ UPDATED: Load category content (folders and direct files) from Firebase Storage
      */
-    private void loadCategoryFolders(String category) {
-        Log.d(TAG, "Loading folders for category: " + category);
+    private void loadCategoryContent(String category) {
+        Log.d(TAG, "🔍 Loading content for category: " + category);
 
         showLoadingState(true, "Loading " + getCurrentCategoryTitle() + "...");
 
-        driveRepository.getFoldersInCategory(category, new GoogleDriveRepository.FolderCallback() {
-            @Override
-            public void onFoldersLoaded(List<GoogleDriveRepository.DriveFolder> folders) {
-                Log.d(TAG, "Loaded " + folders.size() + " folders from category: " + category);
+        // Load both folders and direct files from Firebase Storage
+        loadFoldersAndFiles(category);
+    }
 
-                folderList.clear();
+    /**
+     * ✅ NEW: Load both folders and files from Firebase Storage
+     */
+    private void loadFoldersAndFiles(String category) {
+        folderList.clear();
+
+        // First, load folders
+        storageRepository.getFoldersInCategory(category, new FirebaseStorageRepository.FolderCallback() {
+            @Override
+            public void onFoldersLoaded(List<FirebaseStorageRepository.StorageFolder> folders) {
+                Log.d(TAG, "✅ Loaded " + folders.size() + " folders from category: " + category);
 
                 // Add folders to folderList
-                for (GoogleDriveRepository.DriveFolder folder : folders) {
-                    folderList.add(new FolderModel(folder.getName(), false));
+                for (FirebaseStorageRepository.StorageFolder folder : folders) {
+                    folderList.add(new FolderModel(folder.getName(), false)); // false = folder, not PDF
                     Log.d(TAG, "Added folder: " + folder.getName());
+                }
+
+                // Then, load direct files in category (not in subfolders)
+                loadDirectFilesInCategory(category);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e(TAG, "❌ Failed to load folders for category " + category + ": " + errorMessage);
+
+                // Still try to load direct files even if folder loading fails
+                loadDirectFilesInCategory(category);
+            }
+        });
+    }
+
+    /**
+     * ✅ NEW: Load files directly in category (not in subfolders)
+     */
+    private void loadDirectFilesInCategory(String category) {
+        storageRepository.getFilesInCategory(category, new FirebaseStorageRepository.FilesCallback() {
+            @Override
+            public void onFilesLoaded(List<FirebaseStorageRepository.StorageFile> files) {
+                Log.d(TAG, "✅ Loaded " + files.size() + " direct files from category: " + category);
+
+                // Add PDF files to folderList
+                for (FirebaseStorageRepository.StorageFile file : files) {
+                    if (file.getName().toLowerCase().endsWith(".pdf")) {
+                        folderList.add(new FolderModel(file.getName(), true)); // true = PDF file
+                        Log.d(TAG, "Added direct PDF: " + file.getName());
+                    }
                 }
 
                 // Update UI on main thread
@@ -419,41 +460,36 @@ public class PapersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFolderCreated(String folderId, String folderName) {
-                // Not used in this context
-            }
-
-            @Override
             public void onFailure(String errorMessage) {
-                Log.e(TAG, "Failed to load folders for category " + category + ": " + errorMessage);
+                Log.e(TAG, "❌ Failed to load direct files for category " + category + ": " + errorMessage);
+
                 runOnUiThread(() -> {
                     showLoadingState(false, null);
-                    showError("Failed to load folders: " + errorMessage);
-                    showEmptyState("Loading Failed", "Failed to load folders: " + errorMessage);
+                    updateFoldersDisplay(); // Show what we have (folders)
                 });
             }
         });
     }
 
     /**
-     * Load files in specific folder
+     * ✅ UPDATED: Load files in specific folder using Firebase Storage
      */
-    private void loadFolderFiles(String folderId) {
-        Log.d(TAG, "Loading files in folder: " + folderId);
+    private void loadFolderFiles(String category, String folderName) {
+        Log.d(TAG, "🔍 Loading files in folder: " + folderName + " (category: " + category + ")");
 
         showLoadingState(true, "Loading documents...");
 
-        driveRepository.getFilesInFolder(folderId, new GoogleDriveRepository.FilesCallback() {
+        storageRepository.getFilesInFolder(category, folderName, new FirebaseStorageRepository.FilesCallback() {
             @Override
-            public void onFilesLoaded(List<GoogleDriveRepository.DriveFile> files) {
-                Log.d(TAG, "Loaded " + files.size() + " files from folder");
+            public void onFilesLoaded(List<FirebaseStorageRepository.StorageFile> files) {
+                Log.d(TAG, "✅ Loaded " + files.size() + " files from Firebase Storage folder");
 
                 folderList.clear();
 
                 // Add PDF files to folderList
-                for (GoogleDriveRepository.DriveFile file : files) {
+                for (FirebaseStorageRepository.StorageFile file : files) {
                     if (file.getName().toLowerCase().endsWith(".pdf")) {
-                        folderList.add(new FolderModel(file.getName(), true));
+                        folderList.add(new FolderModel(file.getName(), true)); // true = PDF file
                         Log.d(TAG, "Added PDF: " + file.getName());
                     }
                 }
@@ -467,7 +503,7 @@ public class PapersActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errorMessage) {
-                Log.e(TAG, "Failed to load files: " + errorMessage);
+                Log.e(TAG, "❌ Failed to load files from Firebase Storage: " + errorMessage);
                 runOnUiThread(() -> {
                     showLoadingState(false, null);
                     showError("Failed to load files: " + errorMessage);
@@ -478,14 +514,14 @@ public class PapersActivity extends AppCompatActivity {
     }
 
     /**
-     * Enhanced method to handle item clicks with better navigation
+     * ✅ ENHANCED: Handle item clicks with Firebase Storage
      */
     private void handleItemClick(FolderModel item) {
         if (item.isPdf()) {
-            Log.d(TAG, "PDF clicked: " + item.getName());
+            Log.d(TAG, "📄 PDF clicked: " + item.getName());
             openPdf(item.getName());
         } else {
-            Log.d(TAG, "Folder clicked: " + item.getName());
+            Log.d(TAG, "📁 Folder clicked: " + item.getName());
             navigateToFolder(item.getName());
         }
     }
@@ -498,202 +534,84 @@ public class PapersActivity extends AppCompatActivity {
         navigationStack.push(folderName);
         pathTitleStack.push(folderName);
 
+        currentFolderName = folderName;
         updateUI();
-        findFolderIdAndNavigate(folderName);
+
+        // Load files in this folder
+        loadFolderFiles(currentCategory, folderName);
     }
 
     /**
-     * Find folder ID by name and navigate to it
-     */
-    private void findFolderIdAndNavigate(String folderName) {
-        showLoadingState(true, "Opening folder...");
-
-        driveRepository.getFoldersInCategory(currentCategory, new GoogleDriveRepository.FolderCallback() {
-            @Override
-            public void onFoldersLoaded(List<GoogleDriveRepository.DriveFolder> folders) {
-                // Find the folder with matching name
-                GoogleDriveRepository.DriveFolder targetFolder = null;
-
-                for (GoogleDriveRepository.DriveFolder folder : folders) {
-                    if (folder.getName().equals(folderName)) {
-                        targetFolder = folder;
-                        break;
-                    }
-                }
-
-                if (targetFolder != null) {
-                    currentFolderId = targetFolder.getId();
-                    loadFolderFiles(currentFolderId);
-                } else {
-                    runOnUiThread(() -> {
-                        showLoadingState(false, null);
-                        showError("Folder not found: " + folderName);
-                        showEmptyState("Folder Not Found", "The folder '" + folderName + "' could not be found.");
-                    });
-                }
-            }
-
-            @Override
-            public void onFolderCreated(String folderId, String folderName) {
-                // Not used
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                runOnUiThread(() -> {
-                    showLoadingState(false, null);
-                    showError("Failed to find folder: " + errorMessage);
-                    showEmptyState("Error", "Failed to find folder: " + errorMessage);
-                });
-            }
-        });
-    }
-
-    /**
-     * Open PDF file from Google Drive (your existing implementation)
+     * ✅ UPDATED: Open PDF file from Firebase Storage
      */
     private void openPdf(String fileName) {
-        Log.d(TAG, "Opening PDF: " + fileName);
+        Log.d(TAG, "🚀 Opening PDF from Firebase Storage: " + fileName);
 
         showLoadingState(true, "Loading PDF: " + fileName);
 
-        // Use your existing PDF opening logic
-        findAndOpenPdfFile(fileName);
-    }
-
-    /**
-     * Find PDF file by name and open it (your existing implementation)
-     */
-    private void findAndOpenPdfFile(String fileName) {
-        if (currentFolderId != null) {
-            openPdfFromFolder(currentFolderId, fileName);
-        } else if (currentCategory != null) {
-            openPdfFromCategory(currentCategory, fileName);
+        // Get download URL from Firebase Storage
+        if (currentFolderName != null) {
+            // PDF is in a subfolder
+            openPdfFromFolder(currentCategory, currentFolderName, fileName);
         } else {
-            showLoadingState(false, null);
-            showError("Cannot determine PDF location");
+            // PDF is directly in category
+            openPdfFromCategory(currentCategory, fileName);
         }
     }
 
     /**
-     * Open PDF from specific folder (your existing implementation)
+     * ✅ NEW: Open PDF from Firebase Storage folder
      */
-    private void openPdfFromFolder(String folderId, String fileName) {
-        driveRepository.getFilesInFolder(folderId, new GoogleDriveRepository.FilesCallback() {
-            @Override
-            public void onFilesLoaded(List<GoogleDriveRepository.DriveFile> files) {
-                GoogleDriveRepository.DriveFile foundFile = null;
-
-                for (GoogleDriveRepository.DriveFile file : files) {
-                    if (file.getName().equals(fileName)) {
-                        foundFile = file;
-                        break;
-                    }
-                }
-
-                final GoogleDriveRepository.DriveFile finalFoundFile = foundFile;
-
-                runOnUiThread(() -> {
-                    showLoadingState(false, null);
-
-                    if (finalFoundFile != null) {
-                        openPdfWithWebLink(finalFoundFile.getWebViewLink(), fileName);
-                    } else {
-                        showError("PDF file not found: " + fileName);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                runOnUiThread(() -> {
-                    showLoadingState(false, null);
-                    showError("Failed to find PDF: " + errorMessage);
-                });
-            }
-        });
-    }
-
-    /**
-     * Open PDF from category (your existing implementation)
-     */
-    private void openPdfFromCategory(String category, String fileName) {
-        driveRepository.getFoldersInCategory(category, new GoogleDriveRepository.FolderCallback() {
-            @Override
-            public void onFoldersLoaded(List<GoogleDriveRepository.DriveFolder> folders) {
-                searchPdfInFolders(folders, fileName, 0);
-            }
-
-            @Override
-            public void onFolderCreated(String folderId, String folderName) {
-                // Not used
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                runOnUiThread(() -> {
-                    showLoadingState(false, null);
-                    showError("Failed to search for PDF: " + errorMessage);
-                });
-            }
-        });
-    }
-
-    /**
-     * Recursively search for PDF in folders (your existing implementation)
-     */
-    private void searchPdfInFolders(List<GoogleDriveRepository.DriveFolder> folders, String fileName, int folderIndex) {
-        if (folderIndex >= folders.size()) {
-            runOnUiThread(() -> {
-                showLoadingState(false, null);
-                showError("PDF not found in any folder: " + fileName);
-            });
-            return;
-        }
-
-        GoogleDriveRepository.DriveFolder currentFolder = folders.get(folderIndex);
-
-        driveRepository.getFilesInFolder(currentFolder.getId(), new GoogleDriveRepository.FilesCallback() {
-            @Override
-            public void onFilesLoaded(List<GoogleDriveRepository.DriveFile> files) {
-                GoogleDriveRepository.DriveFile targetFile = null;
-
-                for (GoogleDriveRepository.DriveFile file : files) {
-                    if (file.getName().equals(fileName)) {
-                        targetFile = file;
-                        break;
-                    }
-                }
-
-                if (targetFile != null) {
-                    final GoogleDriveRepository.DriveFile foundFile = targetFile;
+    private void openPdfFromFolder(String category, String folderName, String fileName) {
+        storageRepository.getFileDownloadUrl(category, folderName, fileName,
+                downloadUri -> {
                     runOnUiThread(() -> {
                         showLoadingState(false, null);
-                        openPdfWithWebLink(foundFile.getWebViewLink(), fileName);
+                        Log.d(TAG, "✅ Got download URL from Firebase Storage: " + downloadUri.toString());
+                        openPdfWithUrl(downloadUri.toString(), fileName);
                     });
-                } else {
-                    searchPdfInFolders(folders, fileName, folderIndex + 1);
-                }
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                searchPdfInFolders(folders, fileName, folderIndex + 1);
-            }
-        });
+                },
+                exception -> {
+                    runOnUiThread(() -> {
+                        showLoadingState(false, null);
+                        Log.e(TAG, "❌ Failed to get download URL from Firebase Storage", exception);
+                        showError("Failed to open PDF: " + exception.getMessage());
+                    });
+                });
     }
 
     /**
-     * Open PDF using Google Drive web view link (your existing implementation)
+     * ✅ NEW: Open PDF directly from category (not in subfolder)
      */
-    private void openPdfWithWebLink(String webViewLink, String fileName) {
-        if (webViewLink == null || webViewLink.trim().isEmpty()) {
-            showError("PDF link not available for: " + fileName);
+    private void openPdfFromCategory(String category, String fileName) {
+        storageRepository.getFileDownloadUrl(category, "", fileName, // Empty folder name for direct files
+                downloadUri -> {
+                    runOnUiThread(() -> {
+                        showLoadingState(false, null);
+                        Log.d(TAG, "✅ Got download URL from Firebase Storage: " + downloadUri.toString());
+                        openPdfWithUrl(downloadUri.toString(), fileName);
+                    });
+                },
+                exception -> {
+                    runOnUiThread(() -> {
+                        showLoadingState(false, null);
+                        Log.e(TAG, "❌ Failed to get download URL from Firebase Storage", exception);
+                        showError("Failed to open PDF: " + exception.getMessage());
+                    });
+                });
+    }
+
+    /**
+     * ✅ UPDATED: Open PDF using Firebase Storage download URL
+     */
+    private void openPdfWithUrl(String downloadUrl, String fileName) {
+        if (downloadUrl == null || downloadUrl.trim().isEmpty()) {
+            showError("PDF download URL not available for: " + fileName);
             return;
         }
 
         try {
-            showPdfOpenOptions(webViewLink, fileName);
+            showPdfOpenOptions(downloadUrl, fileName);
         } catch (Exception e) {
             Log.e(TAG, "Failed to open PDF: " + fileName, e);
             showError("Failed to open PDF: " + e.getMessage());
@@ -701,9 +619,9 @@ public class PapersActivity extends AppCompatActivity {
     }
 
     /**
-     * Show PDF opening options (your existing implementation)
+     * Show PDF opening options
      */
-    private void showPdfOpenOptions(String webViewLink, String fileName) {
+    private void showPdfOpenOptions(String downloadUrl, String fileName) {
         String[] options = {
                 "🌐 Open in Browser",
                 "📱 Open in PDF App",
@@ -717,13 +635,13 @@ public class PapersActivity extends AppCompatActivity {
                 .setItems(options, (dialog, which) -> {
                     switch (which) {
                         case 0:
-                            openPdfInBrowser(webViewLink, fileName);
+                            openPdfInBrowser(downloadUrl, fileName);
                             break;
                         case 1:
-                            openPdfInApp(webViewLink, fileName);
+                            openPdfInApp(downloadUrl, fileName);
                             break;
                         case 2:
-                            copyPdfLink(webViewLink, fileName);
+                            copyPdfLink(downloadUrl, fileName);
                             break;
                         case 3:
                             break;
@@ -733,14 +651,14 @@ public class PapersActivity extends AppCompatActivity {
     }
 
     /**
-     * Open PDF in browser (your existing implementation)
+     * Open PDF in browser
      */
-    private void openPdfInBrowser(String webViewLink, String fileName) {
+    private void openPdfInBrowser(String downloadUrl, String fileName) {
         try {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webViewLink));
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl));
             startActivity(browserIntent);
             showSuccess("Opening " + fileName + " in browser");
-            Log.d(TAG, "PDF opened in browser: " + fileName);
+            Log.d(TAG, "✅ PDF opened in browser: " + fileName);
         } catch (Exception e) {
             Log.e(TAG, "Failed to open PDF in browser", e);
             showError("No browser app found");
@@ -748,13 +666,12 @@ public class PapersActivity extends AppCompatActivity {
     }
 
     /**
-     * Open PDF in app (your existing implementation)
+     * Open PDF in app
      */
-    private void openPdfInApp(String webViewLink, String fileName) {
+    private void openPdfInApp(String downloadUrl, String fileName) {
         try {
-            String directLink = convertToDirectDownloadLink(webViewLink);
             Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
-            pdfIntent.setDataAndType(Uri.parse(directLink), "application/pdf");
+            pdfIntent.setDataAndType(Uri.parse(downloadUrl), "application/pdf");
             pdfIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             if (pdfIntent.resolveActivity(getPackageManager()) != null) {
@@ -762,40 +679,29 @@ public class PapersActivity extends AppCompatActivity {
                 showSuccess("Opening " + fileName + " in PDF app");
             } else {
                 showInfo("No PDF app found, opening in browser");
-                openPdfInBrowser(webViewLink, fileName);
+                openPdfInBrowser(downloadUrl, fileName);
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to open PDF in app", e);
-            openPdfInBrowser(webViewLink, fileName);
+            openPdfInBrowser(downloadUrl, fileName);
         }
     }
 
     /**
-     * Copy PDF link (your existing implementation)
+     * Copy PDF link
      */
-    private void copyPdfLink(String webViewLink, String fileName) {
+    private void copyPdfLink(String downloadUrl, String fileName) {
         try {
             android.content.ClipboardManager clipboard =
                     (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-            android.content.ClipData clip = android.content.ClipData.newPlainText("PDF Link", webViewLink);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("PDF Link", downloadUrl);
             clipboard.setPrimaryClip(clip);
             showSuccess("Link copied for: " + fileName);
-            Log.d(TAG, "PDF link copied: " + fileName);
+            Log.d(TAG, "✅ PDF link copied: " + fileName);
         } catch (Exception e) {
             Log.e(TAG, "Failed to copy PDF link", e);
             showError("Failed to copy link");
         }
-    }
-
-    /**
-     * Convert Google Drive view link to direct download link (your existing implementation)
-     */
-    private String convertToDirectDownloadLink(String webViewLink) {
-        if (webViewLink.contains("/file/d/")) {
-            String fileId = webViewLink.split("/file/d/")[1].split("/")[0];
-            return "https://drive.google.com/uc?id=" + fileId + "&export=download";
-        }
-        return webViewLink;
     }
 
     /**
@@ -861,7 +767,7 @@ public class PapersActivity extends AppCompatActivity {
             papersAdapter.notifyDataSetChanged();
         }
 
-        Log.d(TAG, "Folders display updated: " + folderList.size() + " items");
+        Log.d(TAG, "✅ Folders display updated: " + folderList.size() + " items");
     }
 
     /**
@@ -882,7 +788,7 @@ public class PapersActivity extends AppCompatActivity {
     }
 
     /**
-     * ENHANCED: Show empty state with actionable messages
+     * ✅ ENHANCED: Show empty state with Firebase Storage specific messages
      */
     private void showEmptyState(String title, String message) {
         emptyStateLayout.setVisibility(View.VISIBLE);
@@ -897,14 +803,14 @@ public class PapersActivity extends AppCompatActivity {
             if (title.contains("No Documents") && currentCategory != null) {
                 enhancedMessage += "\n\n💡 Suggestions:";
                 enhancedMessage += "\n• Upload documents using the + button";
-                enhancedMessage += "\n• Check if documents were uploaded to the correct category";
-                enhancedMessage += "\n• Long press the search button to debug folder structure";
+                enhancedMessage += "\n• Check Firebase Storage in the Console";
+                enhancedMessage += "\n• Long press the search button to debug Firebase Storage";
+                enhancedMessage += "\n• Ensure files are uploaded to the correct category";
             }
 
             emptyStateMessage.setText(enhancedMessage);
         }
     }
-
 
     /**
      * Handle back navigation
@@ -919,12 +825,16 @@ public class PapersActivity extends AppCompatActivity {
             if ("root".equals(previousState)) {
                 isAtRootLevel = true;
                 currentCategory = null;
-                currentFolderId = null;
+                currentFolderName = null;
                 loadCategories();
+            } else if (currentFolderName != null) {
+                // Going back from folder to category
+                currentFolderName = null;
+                loadCategoryContent(currentCategory);
             } else {
+                // Going back from category to category list
                 currentCategory = previousState;
-                currentFolderId = null;
-                loadCategoryFolders(currentCategory);
+                loadCategoryContent(currentCategory);
             }
 
             updateUI();
@@ -1020,6 +930,6 @@ public class PapersActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "Enhanced PapersActivity destroyed");
+        Log.d(TAG, "✅ Enhanced PapersActivity destroyed - Firebase Storage migration complete!");
     }
 }
