@@ -98,7 +98,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Check user authentication and role
+     * Enhanced method to check user authentication and role
      */
     private void checkUserAuthentication() {
         if (currentUser == null) {
@@ -109,21 +109,61 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         Log.d(TAG, "User signed in: " + currentUser.getEmail());
 
+        // Initially hide upload button until role is confirmed
+        hideUploadButton();
+
         // Fetch user role to determine upload button visibility
         authRepository.fetchUserRole(currentUser.getId(), new GoogleAuthRepository.RoleCallback() {
             @Override
             public void onRoleFetched(String role) {
-                Log.d(TAG, "User role: " + role);
+                Log.d(TAG, "User role fetched: " + role);
                 updateUploadButtonVisibility(role);
             }
 
             @Override
             public void onError(String errorMessage) {
                 Log.e(TAG, "Error fetching user role: " + errorMessage);
-                // Default to hiding upload button if role fetch fails
-                hideUploadButton();
+
+                // If role fetch fails, assign default role and hide upload button
+                Log.w(TAG, "Role fetch failed, assigning default student role");
+                updateUploadButtonVisibility("student");
+
+                // Try to re-assign role based on email
+                attemptRoleReassignment();
             }
         });
+    }
+
+
+    /**
+     * Attempt to reassign role if fetching fails
+     */
+    private void attemptRoleReassignment() {
+        if (currentUser != null) {
+            Log.d(TAG, "Attempting role reassignment for: " + currentUser.getEmail());
+
+            com.example.ddu_e_connect.data.source.remote.RoleManager roleManager =
+                    new com.example.ddu_e_connect.data.source.remote.RoleManager(this);
+
+            roleManager.assignRoleBasedOnEmail(
+                    currentUser.getEmail(),
+                    currentUser.getId(),
+                    new com.example.ddu_e_connect.data.source.remote.RoleManager.RoleCallback() {
+                        @Override
+                        public void onRoleAssigned(String role) {
+                            Log.d(TAG, "Role reassigned successfully: " + role);
+                            updateUploadButtonVisibility(role);
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            Log.e(TAG, "Role reassignment failed: " + errorMessage);
+                            // Keep upload button hidden for safety
+                            hideUploadButton();
+                        }
+                    }
+            );
+        }
     }
 
     /**
@@ -136,9 +176,41 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             binding.uploadPdfButton.setVisibility(isAuthorized ? View.VISIBLE : View.GONE);
 
+            // Update button text based on role
+            if (isAuthorized) {
+                if ("admin".equalsIgnoreCase(role)) {
+                    binding.uploadPdfButton.setText("📤 Upload PDF (Admin)");
+                } else if ("helper".equalsIgnoreCase(role)) {
+                    binding.uploadPdfButton.setText("📤 Upload PDF (Helper)");
+                }
+            }
+
             Log.d(TAG, "Upload button visibility: " + (isAuthorized ? "VISIBLE" : "GONE") +
                     " for role: " + role);
+
+            // Show a welcome message based on role
+            showRoleWelcomeMessage(role, isAuthorized);
         }
+    }
+
+    /**
+     * Show welcome message based on user role
+     */
+    private void showRoleWelcomeMessage(String role, boolean canUpload) {
+        String message;
+
+        if ("admin".equalsIgnoreCase(role)) {
+            message = "👑 Welcome Admin! You have full access to upload and manage PDFs.";
+        } else if ("helper".equalsIgnoreCase(role)) {
+            message = "🤝 Welcome Helper! You can upload PDFs to help students.";
+        } else {
+            message = "👨‍🎓 Welcome Student! You can access all study materials and papers.";
+        }
+
+        // Show toast message (optional - remove if too annoying)
+        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_LONG).show();
+
+        Log.d(TAG, "Role welcome message: " + message);
     }
 
     /**
@@ -570,6 +642,77 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             binding.uploadPdfButton.setOnLongClickListener(v -> {
                 // Long press upload button to test role
                 testCurrentUserRole();
+                return true;
+            });
+        }
+    }
+
+
+    /**
+     * Debug method to check current user role - Add this to HomeActivity.java
+     */
+    private void debugCurrentUserRole() {
+        if (currentUser == null) {
+            Log.e(TAG, "DEBUG: No user signed in");
+            android.widget.Toast.makeText(this, "❌ No user signed in", android.widget.Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Log.d(TAG, "DEBUG: Checking role for: " + currentUser.getEmail());
+
+        authRepository.fetchUserRole(currentUser.getId(), new GoogleAuthRepository.RoleCallback() {
+            @Override
+            public void onRoleFetched(String role) {
+                String debugInfo = "🔍 DEBUG INFO:\n\n" +
+                        "👤 User: " + currentUser.getDisplayName() + "\n" +
+                        "📧 Email: " + currentUser.getEmail() + "\n" +
+                        "🆔 ID: " + currentUser.getId().substring(0, 8) + "...\n" +
+                        "🔐 Role: " + role.toUpperCase() + "\n\n" +
+                        "📤 Can Upload: " + (com.example.ddu_e_connect.data.source.remote.RoleManager.canUpload(role) ? "YES ✅" : "NO ❌") + "\n" +
+                        "👑 Is Admin: " + (com.example.ddu_e_connect.data.source.remote.RoleManager.isAdmin(role) ? "YES ✅" : "NO ❌") + "\n" +
+                        "🤝 Is Helper: " + (com.example.ddu_e_connect.data.source.remote.RoleManager.isHelper(role) ? "YES ✅" : "NO ❌");
+
+                Log.d(TAG, "DEBUG: " + debugInfo);
+
+                new androidx.appcompat.app.AlertDialog.Builder(HomeActivity.this)
+                        .setTitle("🔍 Debug: Current Role")
+                        .setMessage(debugInfo)
+                        .setPositiveButton("OK", null)
+                        .setNeutralButton("Test Upload", (dialog, which) -> {
+                            // Test upload access
+                            Intent uploadIntent = new Intent(HomeActivity.this,
+                                    com.example.ddu_e_connect.presentation.view.papers.UploadActivity.class);
+                            startActivity(uploadIntent);
+                        })
+                        .show();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "DEBUG: Role fetch failed: " + errorMessage);
+                android.widget.Toast.makeText(HomeActivity.this,
+                        "❌ Role fetch failed: " + errorMessage, android.widget.Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * Add this click listener to your existing setupClickListeners() method in HomeActivity
+     */
+    private void addDebugFunctionality() {
+        // Long press on the app title to show debug info
+        TextView titleView = findViewById(R.id.toolbar).findViewById(android.R.id.text1);
+        if (titleView != null) {
+            titleView.setOnLongClickListener(v -> {
+                debugCurrentUserRole();
+                return true;
+            });
+        }
+
+        // Or add to your existing upload button long press
+        if (binding.uploadPdfButton != null) {
+            binding.uploadPdfButton.setOnLongClickListener(v -> {
+                debugCurrentUserRole();
                 return true;
             });
         }

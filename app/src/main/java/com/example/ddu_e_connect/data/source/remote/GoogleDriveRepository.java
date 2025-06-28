@@ -1,10 +1,13 @@
 package com.example.ddu_e_connect.data.source.remote;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.FileContent;
@@ -28,6 +31,7 @@ import java.util.concurrent.Executors;
 public class GoogleDriveRepository {
     private static final String TAG = "GoogleDriveRepository";
     private static final String APP_NAME = "DDU E-Connect";
+    private static final int DRIVE_AUTHORIZATION_REQUEST_CODE = 1001;
 
     // Main folder structure for DDU E-Connect
     private static final String ROOT_FOLDER_NAME = "DDU_E_Connect_Papers";
@@ -59,7 +63,6 @@ public class GoogleDriveRepository {
         void onFailure(String errorMessage);
     }
 
-    // Add the missing AuthCallback interface
     public interface AuthCallback {
         void onAuthSuccess();
         void onAuthFailure(String errorMessage);
@@ -72,7 +75,7 @@ public class GoogleDriveRepository {
     }
 
     /**
-     * Initialize Google Drive service
+     * Initialize Google Drive service with proper permission handling
      */
     private void initializeDriveService() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
@@ -81,49 +84,103 @@ public class GoogleDriveRepository {
             return;
         }
 
-        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
-                context, Collections.singleton(DriveScopes.DRIVE_FILE)
-        );
-        credential.setSelectedAccount(account.getAccount());
+        try {
+            GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
+                    context, Collections.singleton(DriveScopes.DRIVE_FILE)
+            );
+            credential.setSelectedAccount(account.getAccount());
 
-        driveService = new Drive.Builder(
-                new NetHttpTransport(),
-                new GsonFactory(),
-                credential)
-                .setApplicationName(APP_NAME)
-                .build();
+            driveService = new Drive.Builder(
+                    new NetHttpTransport(),
+                    new GsonFactory(),
+                    credential)
+                    .setApplicationName(APP_NAME)
+                    .build();
 
-        Log.d(TAG, "Google Drive service initialized");
+            Log.d(TAG, "Google Drive service initialized successfully");
 
-        // Initialize folder structure
-        initializeFolderStructure();
+            // Test the service immediately to catch auth issues early
+            testDriveServiceConnection();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to initialize Google Drive service", e);
+            driveService = null;
+        }
     }
 
     /**
-     * Initialize the main folder structure for DDU E-Connect
+     * Test Drive service connection
      */
-    private void initializeFolderStructure() {
+    private void testDriveServiceConnection() {
         executor.execute(() -> {
             try {
-                // Check if root folder exists, create if not
-                rootFolderId = findOrCreateFolder(ROOT_FOLDER_NAME, null);
+                // Simple test - try to list files (limited to 1)
+                driveService.files().list()
+                        .setPageSize(1)
+                        .setFields("files(id, name)")
+                        .execute();
 
-                // Create main category folders
-                findOrCreateFolder(ACADEMIC_PAPERS_FOLDER, rootFolderId);
-                findOrCreateFolder(STUDY_MATERIALS_FOLDER, rootFolderId);
-                findOrCreateFolder(EXAM_PAPERS_FOLDER, rootFolderId);
-                findOrCreateFolder(CLUB_DOCUMENTS_FOLDER, rootFolderId);
+                Log.d(TAG, "Drive service connection test: SUCCESS");
 
-                Log.d(TAG, "Folder structure initialized successfully");
+                // Initialize folder structure only after successful connection
+                initializeFolderStructureAsync();
+
+            } catch (UserRecoverableAuthIOException e) {
+                Log.w(TAG, "Drive service needs user consent: " + e.getMessage());
+                handleUserRecoverableAuthError(e);
             } catch (Exception e) {
-                Log.e(TAG, "Failed to initialize folder structure", e);
+                Log.e(TAG, "Drive service connection test failed", e);
             }
         });
     }
 
     /**
+     * Handle user recoverable auth errors
+     */
+    private void handleUserRecoverableAuthError(UserRecoverableAuthIOException e) {
+        Log.d(TAG, "Handling user recoverable auth error");
+
+        // We need to handle this in the UI thread through the calling activity
+        if (context instanceof Activity) {
+            ((Activity) context).runOnUiThread(() -> {
+                try {
+                    // Start the authorization intent
+                    Intent intent = e.getIntent();
+                    ((Activity) context).startActivityForResult(intent, DRIVE_AUTHORIZATION_REQUEST_CODE);
+                } catch (Exception ex) {
+                    Log.e(TAG, "Failed to start authorization intent", ex);
+                }
+            });
+        }
+    }
+
+    /**
+     * Initialize folder structure asynchronously
+     */
+    private void initializeFolderStructureAsync() {
+        try {
+            // Check if root folder exists, create if not
+            rootFolderId = findOrCreateFolder(ROOT_FOLDER_NAME, null);
+            Log.d(TAG, "Root folder ID: " + rootFolderId);
+
+            // Create main category folders
+            findOrCreateFolder(ACADEMIC_PAPERS_FOLDER, rootFolderId);
+            findOrCreateFolder(STUDY_MATERIALS_FOLDER, rootFolderId);
+            findOrCreateFolder(EXAM_PAPERS_FOLDER, rootFolderId);
+            findOrCreateFolder(CLUB_DOCUMENTS_FOLDER, rootFolderId);
+
+            Log.d(TAG, "Folder structure initialized successfully");
+
+        } catch (UserRecoverableAuthIOException e) {
+            Log.w(TAG, "User consent needed for folder initialization");
+            handleUserRecoverableAuthError(e);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to initialize folder structure", e);
+        }
+    }
+
+    /**
      * Request Drive permission and initialize service
-     * This method was missing and causing the error
      */
     public void requestDrivePermission(AuthCallback callback) {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
@@ -134,28 +191,82 @@ public class GoogleDriveRepository {
             return;
         }
 
-        // Check if we already have permission
-        if (driveService != null) {
-            Log.d(TAG, "Drive service already initialized");
-            callback.onAuthSuccess();
+        // Re-initialize drive service if needed
+        if (driveService == null) {
+            Log.d(TAG, "Initializing Drive service for permission request");
+            initializeDriveService();
+        }
+
+        // Test the service
+        executor.execute(() -> {
+            try {
+                if (driveService == null) {
+                    ((Activity) context).runOnUiThread(() ->
+                            callback.onAuthFailure("Failed to initialize Google Drive service"));
+                    return;
+                }
+
+                // Test with a simple call
+                driveService.files().list()
+                        .setPageSize(1)
+                        .setFields("files(id)")
+                        .execute();
+
+                Log.d(TAG, "Drive permission test successful");
+                ((Activity) context).runOnUiThread(() -> callback.onAuthSuccess());
+
+            } catch (UserRecoverableAuthIOException e) {
+                Log.w(TAG, "User consent required");
+
+                ((Activity) context).runOnUiThread(() -> {
+                    // Show user-friendly dialog explaining the need for Drive permission
+                    showDrivePermissionDialog(e, callback);
+                });
+
+            } catch (Exception e) {
+                Log.e(TAG, "Drive permission test failed", e);
+                ((Activity) context).runOnUiThread(() ->
+                        callback.onAuthFailure("Drive access failed: " + e.getMessage()));
+            }
+        });
+    }
+
+    /**
+     * Show Drive permission dialog to user
+     */
+    private void showDrivePermissionDialog(UserRecoverableAuthIOException authException, AuthCallback callback) {
+        if (!(context instanceof Activity)) {
+            callback.onAuthFailure("Cannot request permission in this context");
             return;
         }
 
-        try {
-            // Re-initialize drive service
-            initializeDriveService();
+        Activity activity = (Activity) context;
 
-            if (driveService != null) {
-                Log.d(TAG, "Drive permission granted successfully");
-                callback.onAuthSuccess();
-            } else {
-                Log.e(TAG, "Failed to initialize Drive service");
-                callback.onAuthFailure("Failed to initialize Google Drive service");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error requesting Drive permission", e);
-            callback.onAuthFailure("Error: " + e.getMessage());
-        }
+        String message = "🔐 Google Drive Permission Required\n\n" +
+                "DDU E-Connect needs access to Google Drive to:\n" +
+                "• 📤 Upload PDF files\n" +
+                "• 📁 Create study folders\n" +
+                "• 📚 Organize academic materials\n\n" +
+                "This permission is safe and only allows the app to manage files it creates.";
+
+        new androidx.appcompat.app.AlertDialog.Builder(activity)
+                .setTitle("📂 Drive Access Needed")
+                .setMessage(message)
+                .setPositiveButton("Grant Permission", (dialog, which) -> {
+                    try {
+                        // Start the authorization flow
+                        Intent intent = authException.getIntent();
+                        activity.startActivityForResult(intent, DRIVE_AUTHORIZATION_REQUEST_CODE);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to start Drive authorization", e);
+                        callback.onAuthFailure("Failed to start authorization: " + e.getMessage());
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    callback.onAuthFailure("User denied Drive permission");
+                })
+                .setCancelable(false)
+                .show();
     }
 
     /**

@@ -37,6 +37,7 @@ import java.util.List;
 
 public class UploadActivity extends AppCompatActivity {
     private static final String TAG = "UploadActivity";
+    private static final int DRIVE_AUTHORIZATION_REQUEST_CODE = 1001;
 
     // UI Components
     private ActivityUploadBinding binding;
@@ -270,7 +271,7 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     /**
-     * Handle role-based permissions
+     * Enhanced method to handle role-based permissions
      */
     private void handleRolePermissions(String role) {
         boolean canUpload = "admin".equalsIgnoreCase(role) || "helper".equalsIgnoreCase(role);
@@ -280,30 +281,188 @@ public class UploadActivity extends AppCompatActivity {
             showUnauthorizedDialog(role);
             disableUploadFeatures();
         } else {
-            Log.d(TAG, "User has upload permissions");
+            Log.d(TAG, "User has upload permissions. Role: " + role);
             enableUploadFeatures(role);
+            showWelcomeMessage(role);
         }
     }
 
     /**
-     * Show unauthorized access dialog
+     * Show welcome message for authorized users
+     */
+    private void showWelcomeMessage(String role) {
+        String message;
+
+        if ("admin".equalsIgnoreCase(role)) {
+            message = "👑 Welcome Admin! You have full upload access.";
+        } else if ("helper".equalsIgnoreCase(role)) {
+            message = "🤝 Welcome Helper! Ready to upload educational content.";
+        } else {
+            message = "✅ Upload access granted!";
+        }
+
+        showSuccess(message);
+    }
+
+    /**
+     * Show enhanced unauthorized access dialog with role information
      */
     private void showUnauthorizedDialog(String userRole) {
+        String title = "🔒 Upload Permission Required";
+
+        String message = buildUnauthorizedMessage(userRole);
+
         new AlertDialog.Builder(this)
-                .setTitle("Upload Permission Required")
-                .setMessage("You don't have permission to upload files.\n\n" +
-                        "Your current role: " + userRole.toUpperCase() + "\n" +
-                        "Required roles: ADMIN or HELPER\n\n" +
-                        "Please contact an administrator to get upload permissions.")
-                .setPositiveButton("Contact Admin", (dialog, which) -> {
-                    // Navigate to contact activity
-                    startActivity(new Intent(this,
-                            com.example.ddu_e_connect.presentation.view.contact.ContactUsActivity.class));
+                .setTitle(title)
+                .setMessage(message)
+                .setIcon(R.drawable.ic_lock) // Using your existing lock icon
+                .setPositiveButton("📧 Contact Admin", (dialog, which) -> {
+                    contactAdminForPermission();
                 })
-                .setNegativeButton("Go Back", (dialog, which) -> {
+                .setNeutralButton("ℹ️ Learn More", (dialog, which) -> {
+                    showRoleInformation();
+                })
+                .setNegativeButton("🏠 Go Back", (dialog, which) -> {
                     navigateToHome();
                 })
                 .setCancelable(false)
+                .show();
+    }
+    /**
+     * Contact admin for permission with pre-filled email
+     */
+    private void contactAdminForPermission() {
+        try {
+            String adminEmail = "mrvivekthumar@gmail.com"; // Primary admin from your contacts
+            String subject = "DDU E-Connect: Upload Permission Request";
+
+            String emailBody = buildPermissionRequestEmail();
+
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+            emailIntent.setData(Uri.parse("mailto:" + adminEmail));
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
+
+            startActivity(Intent.createChooser(emailIntent, "Send Permission Request"));
+            Log.d(TAG, "Permission request email intent created");
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to open email for permission request", e);
+
+            // Fallback: Navigate to contact activity
+            Intent contactIntent = new Intent(this,
+                    com.example.ddu_e_connect.presentation.view.contact.ContactUsActivity.class);
+            startActivity(contactIntent);
+        }
+    }
+
+    /**
+     * Build unauthorized message based on user role
+     */
+    private String buildUnauthorizedMessage(String userRole) {
+        StringBuilder message = new StringBuilder();
+
+        message.append("🚫 You don't have permission to upload files.\n\n");
+
+        // Show current role
+        message.append("👤 Your current role: ").append(userRole.toUpperCase()).append("\n");
+        message.append("✅ Required roles: ADMIN or HELPER\n\n");
+
+        // Role-specific explanations
+        if ("student".equalsIgnoreCase(userRole)) {
+            message.append("📚 As a STUDENT, you can:\n");
+            message.append("• Access all study materials\n");
+            message.append("• Download exam papers\n");
+            message.append("• Browse club documents\n");
+            message.append("• Join university clubs\n\n");
+
+            message.append("🎯 To get upload permission:\n");
+            message.append("• Contact an administrator\n");
+            message.append("• Request HELPER role if you're faculty\n");
+            message.append("• Use institutional email (@ddu.ac.in)\n");
+        } else {
+            message.append("❓ Unknown role detected.\n");
+            message.append("Please contact support for role assignment.\n");
+        }
+
+        return message.toString();
+    }
+
+    /**
+     * Build permission request email body
+     */
+    private String buildPermissionRequestEmail() {
+        StringBuilder body = new StringBuilder();
+
+        body.append("Dear Admin,\n\n");
+        body.append("I am requesting upload permission for DDU E-Connect app.\n\n");
+
+        // User information
+        if (currentUser != null) {
+            body.append("📋 My Details:\n");
+            body.append("• Name: ").append(currentUser.getDisplayName()).append("\n");
+            body.append("• Email: ").append(currentUser.getEmail()).append("\n");
+            body.append("• Current Role: Student\n");
+            body.append("• Requested Role: Helper/Admin\n\n");
+        }
+
+        body.append("📝 Reason for Request:\n");
+        body.append("[ Please describe why you need upload permission ]\n\n");
+
+        body.append("🎯 I would like to:\n");
+        body.append("□ Upload study materials for students\n");
+        body.append("□ Share exam papers\n");
+        body.append("□ Upload club documents\n");
+        body.append("□ Help organize academic resources\n\n");
+
+        body.append("Thank you for considering my request.\n\n");
+        body.append("Best regards,\n");
+        if (currentUser != null) {
+            body.append(currentUser.getDisplayName());
+        }
+
+        return body.toString();
+    }
+
+    /**
+     * Show detailed role information dialog
+     */
+    private void showRoleInformation() {
+        String title = "📋 Role Information";
+
+        String roleInfo = "🏛️ DDU E-Connect Role System:\n\n" +
+
+                "👑 ADMIN Role:\n" +
+                "• Full access to upload PDFs\n" +
+                "• Create and manage folders\n" +
+                "• Access all app features\n" +
+                "• Manage user permissions\n\n" +
+
+                "🤝 HELPER Role:\n" +
+                "• Upload PDFs to help students\n" +
+                "• Create folders in categories\n" +
+                "• Usually for faculty/teachers\n" +
+                "• Institutional email preferred\n\n" +
+
+                "👨‍🎓 STUDENT Role:\n" +
+                "• Access all study materials\n" +
+                "• Download exam papers\n" +
+                "• Browse club documents\n" +
+                "• Cannot upload files\n\n" +
+
+                "🔄 Role Assignment:\n" +
+                "• Automatic based on email\n" +
+                "• @ddu.ac.in emails get HELPER role\n" +
+                "• Predefined admin emails get ADMIN\n" +
+                "• All others get STUDENT role\n\n" +
+
+                "📧 Need role change? Contact admin!";
+
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(roleInfo)
+                .setPositiveButton("Got it!", null)
+                .setNeutralButton("Contact Admin", (dialog, which) -> contactAdminForPermission())
                 .show();
     }
 
